@@ -16,6 +16,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 * [Parse common log formats](examples/fluent-bit/parse-common-log-formats)
 * [Send to multiple destinations](examples/fluent-bit/send-to-multiple-destinations)
 * [Add custom metadata to logs](examples/fluent-bit/add-keys)
+* [Datadog monitoring](examples/fuent-bit/datadog)
 
 ### Fluentd Examples
 
