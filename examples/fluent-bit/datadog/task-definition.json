@@ -1,0 +1,44 @@
+{
+	"family": "firelens-example-datadog",
+	"taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+	"executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+	"containerDefinitions": [
+		{
+			"essential": true,
+			"image": "amazon/aws-for-fluent-bit:latest",
+			"name": "log_router",
+			"firelensConfiguration":{ 
+				"type":"fluentbit",
+				"options":{ 
+					"enable-ecs-log-metadata":"true"
+				}
+			},
+			"logConfiguration": {
+				"logDriver": "awsfirelens",
+				"options": {
+					"name": "datadog",
+					"apiKey": "<DATADOG_API_KEY>",
+					"dd_service": "firelens-test",
+					"dd_source": "redis",
+					"dd_tags": "project:fluentbit",
+					"provider": "ecs"
+				}
+			},
+			"memoryReservation": 50
+		 },
+		 {
+			 "essential": true,
+			 "image": "httpd",
+			 "name": "app",
+			 "logConfiguration": {
+				 "logDriver":"awsfirelens",
+				 "options": {
+					"Name": "firehose",
+					"region": "us-west-2",
+					"delivery_stream": "my-stream"
+				}
+			},
+			"memoryReservation": 100
+		}
+	]
+}
