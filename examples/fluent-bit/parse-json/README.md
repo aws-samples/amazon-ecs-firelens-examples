@@ -1,6 +1,18 @@
 ### FireLens Example: Parsing container stdout logs that are serialized JSON
 
-The external Fluent Bit config file in this example will parse any logs that are JSON.
+As of [AWS for Fluent Bit](https://hub.docker.com/r/amazon/aws-for-fluent-bit) version 1.3, an external configuration file is not needed to parse JSON. The config shown in [extra.conf](extra.conf) is included in the image. Simply reference it in your FireLens configuration:
+
+```
+"firelensConfiguration": {
+    "type": "fluentbit",
+    "options": {
+        "config-file-type": "file",
+        "config-file-value": "/fluent-bit/configs/parse-json.conf"
+    }
+},
+```
+
+This Fluent Bit config file will parse any logs that are JSON.
 For example, if the logs at your destination looked like this without JSON parsing:
 
 ```
