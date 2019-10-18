@@ -7,9 +7,9 @@
             "essential": true,
             "image": "amazon/aws-for-fluent-bit:latest",
             "name": "log_router",
-            "firelensConfiguration":{ 
+            "firelensConfiguration":{
                 "type":"fluentbit",
-                "options":{ 
+                "options":{
                     "enable-ecs-log-metadata":"true"
                 }
             },
@@ -23,11 +23,14 @@
                  "logDriver":"awsfirelens",
                  "options": {
                     "name": "datadog",
-                    "apiKey": "<DATADOG_API_KEY>",
                     "dd_service": "my-httpd-service",
                     "dd_source": "httpd",
                     "dd_tags": "project:example",
                     "provider": "ecs"
+                },
+                "secretOptions": {
+                    "name": "apiKey",
+                    "valueFrom": "arn:${Partition}:secretsmanager:${Region}:${Account}:secret:${SecretId}"
                 }
             },
             "memoryReservation": 100
