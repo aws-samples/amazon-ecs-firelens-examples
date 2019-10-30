@@ -1,0 +1,48 @@
+{
+    "taskRoleArn": "arn:aws:iam::XXXXX:role/ecsTaskRole",
+    "executionRoleArn": "arn:aws:iam::XXXXX:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+        {
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "firelens-container",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-create-group": "true",
+                    "awslogs-stream-prefix": "firelens"
+                }
+            },
+            "memoryReservation": 50,
+            "image": "XXXXX.dkr.ecr.us-east-1.amazonaws.com/fluentd:latest",
+            "firelensConfiguration": {
+                "type": "fluentd",
+                "options": {
+                    "config-file-type": "file",
+                    "config-file-value": "/extra.conf"
+                }
+            },
+            "name": "log_router"
+        },
+        {
+            "logConfiguration": {
+                "logDriver": "awsfirelens",
+                "options": {
+                    "log_group_name": "my-log-group",
+                    "log_stream_name": "my-log-stream",
+                    "@type": "cloudwatch_logs",
+                    "region": "us-east-1"
+                }
+            },
+            "memoryReservation": 100,
+            "image": "XXXXX.dkr.ecr.us-east-1.amazonaws.com/myApp:latest",
+            "name": "app"
+        }
+    ],
+    "memory": "2048",
+    "family": "loggingtest",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "networkMode": "awsvpc",
+    "cpu": "1024"
+}
