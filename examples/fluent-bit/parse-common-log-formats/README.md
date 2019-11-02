@@ -43,3 +43,5 @@ Service Section in external Fluent Bit config file:
 [SERVICE]
     Parsers_File /fluent-bit/parsers/custom_parser.conf
 ```
+
+One final note, if you do not specify `Reserve_Data True`, then the ECS Log metadata fields will be removed from your log events. This is because without that field, Fluent Bit will produce a final log event which consists solely of the JSON that resulted from parsing the `log` key (which contains the actual log line from your application container).
