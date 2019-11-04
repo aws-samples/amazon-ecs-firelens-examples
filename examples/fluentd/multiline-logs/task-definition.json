@@ -17,8 +17,8 @@
             "firelensConfiguration": {
                 "type": "fluentd",
                 "options": {
-                    "config-file-type": "file",
-                    "config-file-value": "/extra.conf"
+                    "config-file-type": "s3",
+                    "config-file-value": "arn:aws:s3:::yourbucket/yourdirectory/extra.conf"
                 }
             },
             "name": "log_router"
@@ -40,9 +40,5 @@
     ],
     "memory": "2048",
     "family": "loggingtest",
-    "requiresCompatibilities": [
-        "FARGATE"
-    ],
-    "networkMode": "awsvpc",
     "cpu": "1024"
 }

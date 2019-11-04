@@ -1,19 +1,17 @@
-### FireLens Example: Handling multi line logs with Fluentd
+### FireLens Example: Handling multiline logs with Fluentd
 
 In use cases where your containers do not log json, but plain text, it might happen that the log messages include line breaks (e.g., Stacktraces in Java). You may want to handle these kind of logs in a way that lines are merged until a "real" new log line begins.
 For this task, you can use Firelens with Fluentd to join these logs before sending them off.
 
 You need a Docker image with Fluentd and the [concat plugin](https://github.com/fluent-plugins-nursery/fluent-plugin-concat), as well as additional plugins you may require to further process your logs or send them off (see [Dockerfile](Dockerfile) as an example).
-The config shown in [extra.conf](extra.conf) needs to be included in the Docker image.
-
-To apply this configuration, you need to reference it in your FireLens configuration:
+In this example, the additional config ([extra.conf](extra.conf)) needs to be stored in S3, as referenced in `config-file-value` in the task definition:
 
 ```
 "firelensConfiguration": {
     "type": "fluentd",
     "options": {
-        "config-file-type": "file",
-        "config-file-value": "/extra.conf"
+        "config-file-type": "s3",
+        "config-file-value": "arn:aws:s3:::yourbucket/yourdirectory/extra.conf"
     }
 },
 ```
