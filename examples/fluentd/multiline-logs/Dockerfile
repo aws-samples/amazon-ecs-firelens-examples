@@ -1,7 +1,9 @@
 # Be sure to update the versions to the ones you require
 FROM fluent/fluentd:v1.7.4-1.0
 
-ADD fluentd.conf /extra.conf
+# Required if you're not storing this config on S3.
+# In this case, you need to change the reference in the task definition as well.
+# ADD fluentd.conf /extra.conf
 
 # Use root account to install apk
 USER root

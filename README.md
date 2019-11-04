@@ -20,7 +20,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 
 ### Fluentd Examples
 
-* [Handling multi line logs](examples/fluentd/multiline-logs)
+* [Handling multiline logs](examples/fluentd/multiline-logs)
 
 ### Setup for the examples
 
