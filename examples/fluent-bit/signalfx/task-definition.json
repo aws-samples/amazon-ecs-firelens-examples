@@ -1,0 +1,38 @@
+{
+    "family": "firelens-example-signalfx",
+    "taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+    "executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "quay.io/signalfx/fluent-bit-aws:1.3.2",
+            "name": "log_router",
+            "firelensConfiguration": {
+                "type": "fluentbit",
+                "options": {
+                    "enable-ecs-log-metadata": "true"
+                }
+            },
+            "memoryReservation": 64
+        },
+        {
+            "essential": true,
+            "image": "nginx",
+            "name": "app",
+            "logConfiguration": {
+                "logDriver": "awsfirelens",
+                "options": {
+                    "Name": "SignalFx",
+                    "MetricName": "com.firelens.example",
+                    "MetricType": "counter",
+                    "Dimensions": "ecs_cluster, container_name"
+                },
+                "secretOptions": {
+                    "name": "Token",
+                    "valueFrom": "arn:${Partition}:secretsmanager:${Region}:${Account}:secret:${SecretId}"
+                }
+            },
+            "memoryReservation": 64
+        }
+    ]
+}
