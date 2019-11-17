@@ -18,6 +18,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 * [Add custom metadata to logs](examples/fluent-bit/add-keys)
 * [Datadog monitoring](examples/fluent-bit/datadog)
 * [SignalFx monitoring](examples/fluent-bit/signalfx)
+* [New Relic Logs](examples/fluent-bit/newrelic)
 
 ### Fluentd Examples
 
