@@ -1,44 +1,48 @@
 {
-    "family": "newrelic-firelens-example",
-    "networkMode": "awsvpc",
-	"requiresCompatibilities": [
-		"FARGATE"
-	],
-	"containerDefinitions": [
-		{
-			"essential": true,
-			"image": "533243300146.dkr.ecr.us-east-2.amazonaws.com/newrelic/logging-firelens-fluentbit",
-			"name": "log_router",
-			"firelensConfiguration": {
-                "type": "fluentbit",
-                "options": {
-					"enable-ecs-log-metadata": "true"
-				}
-			}
-         },
-		 {
-            "essential": true,
-			"name": "webserver",
-			"image": "nginx",
-			"cpu": 512,
-			"memoryReservation": 1024,
-			"portMappings": [{
-				"containerPort": 5000
-			}],
-			 "logConfiguration": {
-				 "logDriver":"awsfirelens",
-				 "options": {
-					"Name": "newrelic" 
-				 },			
-				 "secretOptions": [{
-					 "name": "apiKey",
-					 "valueFrom": "arn:aws:secretsmanager:region:aws_account_id:secret:secret_name-AbCdEf"
-				 }] 	
-			}
-		}
-    ],
-    "executionRoleArn": "arn:aws:iam::aws_account_id:role/ecsTaskExecutionRole",
-    "taskRoleArn": "arn:aws:iam::aws_account_id:role/ecsTaskExecutionRole",
-    "cpu": "1 vcpu",
-	"memory": "2 gb"
+  "family": "newrelic-firelens-example",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "containerDefinitions": [
+    {
+      "essential": true,
+      "image": "533243300146.dkr.ecr.us-east-2.amazonaws.com/newrelic/logging-firelens-fluentbit",
+      "name": "log_router",
+      "firelensConfiguration": {
+        "type": "fluentbit",
+        "options": {
+          "enable-ecs-log-metadata": "true"
+        }
+      }
+    },
+    {
+      "essential": true,
+      "name": "webserver",
+      "image": "nginx",
+      "cpu": 512,
+      "memoryReservation": 1024,
+      "portMappings": [
+        {
+          "containerPort": 5000
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awsfirelens",
+        "options": {
+          "Name": "newrelic"
+        },
+        "secretOptions": [
+          {
+            "name": "apiKey",
+            "valueFrom": "arn:aws:secretsmanager:region:aws_account_id:secret:secret_name-AbCdEf"
+          }
+        ]
+      }
+    }
+  ],
+  "executionRoleArn": "arn:aws:iam::aws_account_id:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::aws_account_id:role/ecsTaskExecutionRole",
+  "cpu": "1 vcpu",
+  "memory": "2 gb"
 }
