@@ -1,0 +1,42 @@
+{
+	"family": "firelens-rewrite-tag-logger",
+	"networkMode": "awsvpc",
+	"executionRoleArn": "arn:aws:iam::012345678910:role/ecsExecutionRole",
+	"taskRoleArn": "arn:aws:iam::012345678910:role/ecs_task_role",
+	"requiresCompatibilities": ["FARGATE"],
+	"cpu": "1024",
+	"memory": "2048",
+	"containerDefinitions": [
+		{
+			"essential": true,
+			"image": "012345678910.dkr.ecr.ap-south-1.amazonaws.com/awsfluentd:latest",
+			"name": "logrouter",
+			"firelensConfiguration": {
+				"type": "fluentd",
+				"options": {
+					"config-file-type": "s3",
+					"config-file-value": "arn:aws:s3:::firelens-config-bucket/rewrite-tag.conf"
+				}
+			},
+			"logConfiguration": {
+				"logDriver": "awslogs",
+				"options": {
+					"awslogs-group": "fluent-logger-app-router",
+					"awslogs-region": "ap-south-1",
+					"awslogs-create-group": "true",
+					"awslogs-stream-prefix": "rewrite-tag"
+				}
+			},
+			"memoryReservation": 100
+		 },
+		 {
+			 "essential": true,
+			 "image": "012345678910.dkr.ecr.ap-south-1.amazonaws.com/multi-streams-logger:latest",
+			 "name": "app",
+			 "logConfiguration": {
+ 				"logDriver": "awsfirelens"
+ 			},
+			"memoryReservation": 100
+		}
+	]
+}

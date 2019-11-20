@@ -1,0 +1,45 @@
+{
+	"family": "firelens-streams-logger",
+	"networkMode": "awsvpc",
+	"executionRoleArn": "arn:aws:iam::012345678910:role/ecsExecutionRole",
+	"taskRoleArn": "arn:aws:iam::012345678910:role/ecs_task_role",
+	"requiresCompatibilities": ["FARGATE"],
+	"cpu": "1024",
+	"memory": "2048",
+	"containerDefinitions": [
+		{
+			"essential": true,
+			"image": "012345678910.dkr.ecr.ap-south-1.amazonaws.com/streams-bit:latest",
+			"name": "logrouter",
+			"firelensConfiguration": {
+				"type": "fluentbit",
+				"options": {
+					"config-file-type": "file",
+					"config-file-value": "/fluent-bit.conf"
+				}
+			},
+			"environment": [
+				{ "name": "FLB_LOG_LEVEL", "value": "debug" }
+			],
+			"logConfiguration": {
+				"logDriver": "awslogs",
+				"options": {
+					"awslogs-group": "fluent-logger-app-router",
+					"awslogs-region": "ap-south-1",
+					"awslogs-create-group": "true",
+					"awslogs-stream-prefix": "firelens-container"
+				}
+			},
+			"memoryReservation": 100
+		 },
+		 {
+			 "essential": true,
+			 "image": "012345678910.dkr.ecr.ap-south-1.amazonaws.com/multi-streams-logger:latest",
+			 "name": "app",
+			 "logConfiguration": {
+ 				"logDriver": "awsfirelens"
+ 			},
+			"memoryReservation": 100
+		}
+	]
+}
