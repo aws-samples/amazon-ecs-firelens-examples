@@ -8,6 +8,16 @@ The setup for Fluent Bit for this example includes multiple files, so you'll nee
 
 You can then use the [example task definition](task_definition.json).
 
+Note that the example task definition app log configuration does not have any options to specify a destination:
+
+```
+			 "logConfiguration": {
+ 				"logDriver": "awsfirelens"
+ 			},
+```
+
+If you did specify an a destination there, then you would have a second "backup" destination for the logs. This is because the stream queries will copy all of the logs and send them to the destination in the [custom config file](custom-fluent-bit-image/fluent.conf). This is explained in more detail in the blog post.
+
 ### Use outside of FireLens.
 
 The example files [here]((custom-fluent-bit-image)) will work, but you should make one change- place the `fluent-bit.conf` at the path `/fluent-bit/etc/fluent-bit.conf` in your custom image or in your kubernetes config map. This is the default config path used by most Fluent Bit images.
