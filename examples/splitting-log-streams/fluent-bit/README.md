@@ -13,3 +13,15 @@ You can then use the [example task definition](task_definition.json).
 The example files [here]((custom-fluent-bit-image)) will work, but you should make one change- place the `fluent-bit.conf` at the path `/fluent-bit/etc/fluent-bit.conf` in your custom image or in your kubernetes config map. This is the default config path used by most Fluent Bit images.
 
 You will also need to add an input definition to `fluent-bit.conf` to ingest your logs. This will depend on the details of your individual setup.
+
+You can choose to [turn routing off](https://fluentbit.io/announcements/v1.2.0/) for your input- this means that logs from your input will not be able to be sent to destinations. They can only be sent to the stream processor (which can re-tag them and then they can be sent to destinations). 
+
+For example:
+
+```
+[INPUT]
+    Name     tail
+    Path     /path/to/my/*.log
+    Tag      logs.*
+    Routable false
+```
