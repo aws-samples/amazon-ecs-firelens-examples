@@ -1,0 +1,40 @@
+{
+    "family": "firelens-example-sumologic",
+    "taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+    "executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "amazon/aws-for-fluent-bit:latest",
+            "name": "log_router",
+            "firelensConfiguration":{
+                "type":"fluentbit",
+                "options":{
+                    "enable-ecs-log-metadata":"true"
+                }
+            },
+            "memoryReservation": 50
+         },
+         {
+             "essential": true,
+             "image": "httpd",
+             "name": "app",
+             "logConfiguration": {
+                 "logDriver":"awsfirelens",
+                 "options": {
+                    "Name":"http",
+                    "Host": "<endpoint>",
+                    "Port": "443",
+                    "tls": "on",
+                    "tls.verify": "off",
+                    "Format": "json_lines"
+                },
+                "secretOptions": [{
+                    "name": "URI",
+                    "valueFrom": "arn:${Partition}:secretsmanager:${Region}:${Account}:secret:${SecretId}"
+                }]
+            },
+            "memoryReservation": 100
+        }
+    ]
+}
