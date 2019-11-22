@@ -22,7 +22,7 @@
              "logConfiguration": {
                  "logDriver":"awsfirelens",
                  "options": {
-                    "name": "datadog",
+                    "Name": "datadog",
                     "dd_service": "my-httpd-service",
                     "dd_source": "httpd",
                     "dd_tags": "project:example",
