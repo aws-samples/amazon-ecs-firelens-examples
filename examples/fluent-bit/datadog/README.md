@@ -8,7 +8,7 @@ AWS recommends that you store sensitive information, like your Datadog API Key u
 "logConfiguration": {
 	"logDriver":"awsfirelens",
 	"options": {
-	   "name": "datadog",
+	   "Name": "datadog",
 	   "apiKey": "<DATADOG_API_KEY>",
 	   "dd_service": "my-httpd-service",
 	   "dd_source": "httpd",
