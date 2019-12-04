@@ -23,15 +23,17 @@
                  "logDriver":"awsfirelens",
                  "options": {
                     "Name": "datadog",
+                    "Host": "http-intake.logs.datadoghq.com",
+                    "TLS": "on",
                     "dd_service": "my-httpd-service",
                     "dd_source": "httpd",
                     "dd_tags": "project:example",
                     "provider": "ecs"
                 },
-                "secretOptions": {
-                    "name": "apiKey",
+                "secretOptions": [{
+                    "name": "apikey",
                     "valueFrom": "arn:${Partition}:secretsmanager:${Region}:${Account}:secret:${SecretId}"
-                }
+                }]
             },
             "memoryReservation": 100
         }
