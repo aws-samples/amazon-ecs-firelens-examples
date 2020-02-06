@@ -14,6 +14,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 * [Forward to a Fluentd or Fluent Bit Log Aggregator](examples/fluent-bit/forward-to-aggregator)
 * [Parse Serialized JSON](examples/fluent-bit/parse-json)
 * [Parse common log formats](examples/fluent-bit/parse-common-log-formats)
+* [Parse Envoy Access Logs from AWS App Mesh](examples/fluent-bit/parse-envoy-app-mesh)
 * [Send to multiple destinations](examples/fluent-bit/send-to-multiple-destinations)
 * [Add custom metadata to logs](examples/fluent-bit/add-keys)
 * [Datadog monitoring](examples/fluent-bit/datadog)
