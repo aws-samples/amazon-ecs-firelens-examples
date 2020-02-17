@@ -2,7 +2,7 @@
 	"family": "firelens-example-firehose",
 	"taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
 	"executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
-	"containerDefinitions": [
+	"ContainerDefinitions": [
 		{
 			"essential": true,
 			"image": "amazon/aws-for-fluent-bit:latest",
