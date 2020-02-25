@@ -1,0 +1,138 @@
+{
+    "family": "appmesh-firelens-colorteller-black",
+    "proxyConfiguration": {
+      "type": "APPMESH",
+      "containerName": "envoy",
+      "properties": [{
+          "name": "IgnoredUID",
+          "value": "1337"
+        },
+        {
+          "name": "ProxyIngressPort",
+          "value": "15000"
+        },
+        {
+          "name": "ProxyEgressPort",
+          "value": "15001"
+        },
+        {
+          "name": "AppPorts",
+          "value": "9080"
+        },
+        {
+          "name": "EgressIgnoredIPs",
+          "value": "169.254.170.2,169.254.169.254"
+        }
+      ]
+    },
+    "containerDefinitions": [
+      {
+              "essential": true,
+              "image": "012345678910.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit-custom-envoy:latest",
+              "name": "log_router",
+              "firelensConfiguration": {
+                  "type": "fluentbit",
+                  "options": {
+                      "enable-ecs-log-metadata": "true",
+                      "config-file-type": "file",
+                      "config-file-value": "/fluent-bit/conf/parse_envoy.conf"
+                  }
+              },
+              "logConfiguration": {
+                  "logDriver": "awslogs",
+                  "options": {
+                      "awslogs-group": "appmesh-firelens",
+                      "awslogs-region": "us-east-1",
+                      "awslogs-stream-prefix": "fluentbit"
+                  }
+              },
+              "memoryReservation": 50
+          },
+      {
+        "name": "app",
+        "image": "012345678910.dkr.ecr.us-east-1.amazonaws.com/colorteller:latest",
+        "portMappings": [{
+          "containerPort": 9080,
+          "hostPort": 9080,
+          "protocol": "tcp"
+        }],
+        "environment": [{
+            "name": "COLOR",
+            "value": "black"
+          },
+          {
+            "name": "SERVER_PORT",
+            "value": "9080"
+          }
+        ],
+        "essential": true,
+        "dependsOn": [{
+          "containerName": "envoy",
+          "condition": "HEALTHY"
+        }]
+      },
+      {
+        "name": "envoy",
+        "image": "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.12.2.1-prod",
+        "user": "1337",
+        "essential": true,
+        "ulimits": [{
+          "name": "nofile",
+          "hardLimit": 15000,
+          "softLimit": 15000
+        }],
+        "portMappings": [{
+            "containerPort": 9901,
+            "hostPort": 9901,
+            "protocol": "tcp"
+          },
+          {
+            "containerPort": 15000,
+            "hostPort": 15000,
+            "protocol": "tcp"
+          },
+          {
+            "containerPort": 15001,
+            "hostPort": 15001,
+            "protocol": "tcp"
+          }
+        ],
+        "environment": [{
+            "name": "APPMESH_VIRTUAL_NODE_NAME",
+            "value": "mesh/color-mesh/virtualNode/colorteller-black-appmesh-demo"
+          },
+          {
+            "name": "ENVOY_LOG_LEVEL",
+            "value": "info"
+          }
+        ],
+        "logConfiguration": {
+          "logDriver": "awsfirelens",
+          "options": {
+            "Name": "cloudwatch",
+            "region": "us-east-1",
+            "log_group_name": "appmesh-firelens",
+            "auto_create_group": "true",
+            "log_stream_prefix": "envoy-black-"
+          }
+        },
+        "healthCheck": {
+          "command": [
+            "CMD-SHELL",
+            "curl -s http://localhost:9901/server_info | grep state | grep -q LIVE"
+          ],
+          "interval": 5,
+          "timeout": 2,
+          "retries": 3
+        }
+      }
+    ],
+    "taskRoleArn": "arn:aws:iam::012345678910:role/ecs_task_role",
+    "executionRoleArn": "arn:aws:iam::012345678910:role/ecsExecutionRole",
+    "requiresCompatibilities": [
+      "FARGATE"
+    ],
+    "networkMode": "awsvpc",
+    "cpu": "1024",
+    "memory": "2048"
+  }
