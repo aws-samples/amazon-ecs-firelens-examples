@@ -21,6 +21,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 * [SignalFx monitoring](examples/fluent-bit/signalfx)
 * [New Relic Logs](examples/fluent-bit/newrelic)
 * [Sumo Logic](examples/fluent-bit/sumologic)
+* [SolarWinds Loggly](examples/fluent-bit/solarwinds-loggly)
 
 ### Fluentd Examples
 
