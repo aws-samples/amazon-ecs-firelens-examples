@@ -6,17 +6,17 @@ AWS recommends that you store sensitive information (like the URI containing you
 
 ```
 "logConfiguration": {
-	"logDriver": "awsfirelens",
-	"options": {
-		"Name": "http",
-		"Host": "logs-01.loggly.com",
-		"URI": "/bulk/<token>/",
-		"Port": "443",
-		"tls": "on",
-		"Format": "json_lines",
+        "logDriver": "awsfirelens",
+        "options": {
+                "Name": "http",
+                "Host": "logs-01.loggly.com",
+                "URI": "/bulk/<token>/",
+                "Port": "443",
+                "tls": "on",
+                "Format": "json_lines",
                 "Json_date_key": "timestamp",
                 "Json_date_format": "iso8601",
                 "Retry_limit": "False"
-	}
+        }
 }
 ```
