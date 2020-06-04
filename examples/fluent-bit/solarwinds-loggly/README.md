@@ -10,7 +10,7 @@ AWS recommends that you store sensitive information (like the URI containing you
         "options": {
                 "Name": "http",
                 "Host": "logs-01.loggly.com",
-                "URI": "/bulk/<token>/",
+                "URI": "/bulk/<token>/tag/<tag>/",
                 "Port": "443",
                 "tls": "on",
                 "Format": "json_lines",
