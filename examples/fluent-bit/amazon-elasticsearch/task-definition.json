@@ -1,0 +1,44 @@
+{
+	"family": "firelens-example-cloudwatch",
+	"taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+	"executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+	"containerDefinitions": [
+		{
+			"essential": true,
+			"image": "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:latest",
+			"name": "log_router",
+			"firelensConfiguration": {
+				"type": "fluentbit"
+			},
+			"logConfiguration": {
+				"logDriver": "awslogs",
+				"options": {
+					"awslogs-group": "firelens-container",
+					"awslogs-region": "us-west-2",
+					"awslogs-create-group": "true",
+					"awslogs-stream-prefix": "firelens"
+				}
+			},
+			"memoryReservation": 50
+		 },
+		 {
+			 "essential": true,
+			 "image": "nginx",
+			 "name": "app",
+			 "logConfiguration": {
+				 "logDriver":"awsfirelens",
+				 "options": {
+					"Name": "es",
+					"Host": "vpc-fake-domain-ke7thhzo07jawrhmz6mb7ite7y.us-west-2.es.amazonaws.com",
+					"Port": "443",
+					"Index": "my_index",
+					"Type": "my_type",
+					"Aws_Auth": "On",
+					"Aws_Region": "us-west-2",
+					"tls": "On"
+				}
+			},
+			"memoryReservation": 100
+		}
+	]
+}
