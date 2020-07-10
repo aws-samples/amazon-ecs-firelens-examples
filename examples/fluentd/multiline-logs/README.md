@@ -16,7 +16,7 @@ In this example, the additional config ([extra.conf](extra.conf)) needs to be st
 },
 ```
 
-This Fluentd configuration will concatinate lines until it encounters a new line matching the provided regex in [extra.conf](extra.conf).
+This Fluentd configuration will concatinate lines until it encounters a new line matching the provided regex in [extra.conf](extra.conf). The Fluentd concat filter uses Ruby regular expressions to match log lines. **It is recommended that you use the [Rubular](https://rubular.com/) website to test your regular expressions.**
 
 The example here would merge the lines:
 
