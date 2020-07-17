@@ -6,6 +6,9 @@ Sample logging architectures for FireLens on Amazon ECS and AWS Fargate.
 
 We want examples of as many use cases in this repository as possible! Submit a Pull Request if you would like to add something.
 
+### Basic FireLens examples
+* [Using the 'file' 'config-file-type'](examples/fluent-bit/config-file-type-file)
+
 ### Fluent Bit Examples
 
 * [Send to CloudWatch Logs](examples/fluent-bit/cloudwatchlogs)

@@ -1,0 +1,17 @@
+{
+    "cluster": "default",
+    "taskDefinition": "firelens-amazon-es-bug-bash:4",
+    "launchType": "FARGATE",
+    "networkConfiguration": {
+        "awsvpcConfiguration": {
+            "assignPublicIp": "ENABLED",
+            "subnets": [
+                "subnet-085a02b9ae9f3e86e",
+                "subnet-0b91aaca96e30c195"
+            ],
+            "securityGroups": [
+                "sg-030bc708ef4c925a4"
+            ]
+        }
+    }
+}
