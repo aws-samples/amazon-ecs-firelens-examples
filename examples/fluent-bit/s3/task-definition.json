@@ -1,0 +1,41 @@
+{
+	"family": "firelens-example-firehose",
+	"taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+	"executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+	"containerDefinitions": [
+		{
+			"essential": true,
+			"image": "amazon/aws-for-fluent-bit:latest",
+			"name": "log_router",
+			"firelensConfiguration": {
+				"type": "fluentbit"
+			},
+			"logConfiguration": {
+				"logDriver": "awslogs",
+				"options": {
+					"awslogs-group": "firelens-container",
+					"awslogs-region": "us-west-2",
+					"awslogs-create-group": "true",
+					"awslogs-stream-prefix": "firelens"
+				}
+			},
+			"memoryReservation": 50
+		 },
+		 {
+			 "essential": true,
+			 "image": "httpd",
+			 "name": "app",
+			 "logConfiguration": {
+				 "logDriver":"awsfirelens",
+				 "options": {
+					"Name": "s3",
+					"region": "us-west-2",
+					"bucket": "your-bucket",
+					"total_file_size": "1M",
+					"upload_timeout": "1m"
+				}
+			},
+			"memoryReservation": 100
+		}
+	]
+}
