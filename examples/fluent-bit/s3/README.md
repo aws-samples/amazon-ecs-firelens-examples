@@ -14,7 +14,7 @@ The `store_dir` is used for two purposes:
 1. Storing chunks of data before uploading them. If you enable S3 put object, then the plugin will buffer the entire file on Disk before sending. By default the plugin uses multipart uploads, and will only buffer a single chunk of the upload on disk at any point in time.
 2. Storing metadata about multipart uploads. Multipart uploads will not be visible in S3 until all parts/chunks are sent. Fluent Bit expects a persistent disk to store this data. If Fluent Bit is stopped unexpectedly, it can be restarted with the same disk and will complete any unfinished uploads.
 
-If you set up unique host mount volumes, or docker volumes for each of your tasks, you can have persistent storage with Fluent Bit.
+To set up persistent storage for Fluent Bit, we recommend considering the Amazon ECS integration with Amazon EFS. The [series of blog posts starting here](https://aws.amazon.com/blogs/containers/developers-guide-to-using-amazon-efs-with-amazon-ecs-and-aws-fargate-part-1/) are a good starting guide.
 
 This task definition example shows a scenario where you do not have persistent disk storage set up. Fluent Bit is therefore configured with a small upload file size and a short upload timeout, so that very little data is buffered disk at any point in time.
 
