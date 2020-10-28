@@ -31,7 +31,7 @@
 					"Name": "s3",
 					"region": "us-west-2",
 					"bucket": "your-bucket",
-					"total_file_size": "1M",
+					"total_file_size": "6M",
 					"upload_timeout": "1m"
 				}
 			},
