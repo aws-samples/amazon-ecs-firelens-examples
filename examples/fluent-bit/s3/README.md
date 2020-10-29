@@ -16,7 +16,7 @@ The `store_dir` is used for two purposes:
 
 To set up persistent storage for Fluent Bit, we recommend considering the Amazon ECS integration with Amazon EFS. The [series of blog posts starting here](https://aws.amazon.com/blogs/containers/developers-guide-to-using-amazon-efs-with-amazon-ecs-and-aws-fargate-part-1/) are a good starting guide.
 
-This task definition example shows a scenario where you do not have persistent disk storage set up. Fluent Bit is therefore configured with a small upload file size and a short upload timeout, so that very little data is buffered disk at any point in time.
+This task definition example shows a scenario where you do not have persistent disk storage set up. Fluent Bit is therefore configured with a small upload file size and a short upload timeout, so that very little data is buffered disk at any point in time. It uses the PutObject API, which is better for environments without persistent storage (the default is multipart uploads, which are great when you have persistent disk on which Fluent Bit can store its upload state file).
 
 Please see the section in the Fluent Bit S3 documentation on reliability.
 
