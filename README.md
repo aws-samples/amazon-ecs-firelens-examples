@@ -32,6 +32,12 @@ We want examples of as many use cases in this repository as possible! Submit a P
 
 * [Handling multiline logs](examples/fluentd/multiline-logs)
 
+### Splitting an applications logs into multiple strings
+
+Artifacts for the blog [Splitting an application’s logs into multiple streams: a Fluent tutorial](https://aws.amazon.com/blogs/opensource/splitting-application-logs-multiple-streams-fluent/)
+
+* [Splitting logs artifacts/examples](examples/splitting-log-streams)
+
 ### Setup for the examples
 
 Before you use FireLens, familiarize yourself with [Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_GetStarted_EC2.html) and with the [FireLens documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html).
