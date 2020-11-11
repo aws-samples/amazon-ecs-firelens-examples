@@ -13,9 +13,9 @@ By default, FireLens will send a JSON event with the raw log line encapsulated i
 			"Name": "cloudwatch",
 			"region": "us-west-2",
 			"log_key": "log",
-			"log_group_name": "firelens-fluent-bit",
-			"auto_create_group": "true",
-			"log_stream_prefix": "from-fluent-bit"
+			"log_group_name": "/aws/ecs/containerinsights/$(ecs_cluster)/application",
+			"auto_create_group": "$(ecs_task_id)",
+			"log_stream_prefix": ""
 		}
 	},
 ```
