@@ -30,6 +30,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 * [New Relic Logs](examples/fluent-bit/newrelic)
 * [Sumo Logic](examples/fluent-bit/sumologic)
 * [SolarWinds Loggly](examples/fluent-bit/solarwinds-loggly)
+* [Sematext Logs](examples/fluent-bit/sematext)
 
 ### Fluentd Examples
 
