@@ -20,3 +20,5 @@ AWS recommends that you store sensitive information, like your Sematext `LOGS_TO
     }
 },
 ```
+
+> Note: If you are using the EU region of Sematext, use this Host value: `"Host": "logs-ecs-receiver.eu.sematext.com"`
