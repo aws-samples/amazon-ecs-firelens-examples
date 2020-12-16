@@ -1,0 +1,42 @@
+{
+  "family": "firelens-example-sematext",
+  "taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+  "executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+  "containerDefinitions": [
+      {
+          "essential": true,
+          "image": "amazon/aws-for-fluent-bit:latest",
+          "name": "log_router",
+          "firelensConfiguration":{
+              "type":"fluentbit",
+              "options":{
+                  "enable-ecs-log-metadata":"true"
+              }
+          },
+          "memoryReservation": 50
+       },
+       {
+           "essential": true,
+           "image": "nginx",
+           "name": "website",
+           "logConfiguration": {
+              "logDriver":"awsfirelens",
+              "options": {
+                  "Name": "http",
+                  "Match": "*",
+                  "Header": "sourceName nginx",
+                  "Host": "logs-ecs-receiver.sematext.com",
+                  "Port": "443",
+                  "TLS": "on",
+                  "Format": "json",
+                  "compress": "gzip"
+              },
+              "secretOptions": [{
+                  "name": "URI",
+                  "valueFrom": "arn:${Partition}:secretsmanager:${Region}:${Account}:secret:${SecretId}"
+              }]
+          },
+          "memoryReservation": 100
+      }
+  ]
+}
