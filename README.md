@@ -11,6 +11,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 
 ### Basic FireLens examples
 * [Using the 'file' 'config-file-type'](examples/fluent-bit/config-file-type-file)
+* [Using EFS to store configuration files](examples/fluent-bit/efs)
 
 ### Fluent Bit Examples
 
