@@ -1,0 +1,76 @@
+{
+    "taskDefinition": {
+		"family": "firelens-efs-example",
+        "taskRoleArn": "arn:aws:iam::11111111111:role/ecsTaskExecutionRole",
+        "executionRoleArn": "arn:aws:iam::11111111111:role/ecsTaskExecutionRole",
+        "networkMode": "awsvpc",
+        "containerDefinitions": [
+            {
+                "name": "nginx",
+                "image": "nginx",
+                "cpu": 0,
+                "portMappings": [
+                    {
+                        "containerPort": 80,
+                        "hostPort": 80,
+                        "protocol": "tcp"
+                    }
+                ],
+                "essential": true,
+                "environment": [],
+                "mountPoints": [],
+                "volumesFrom": [],
+                "logConfiguration": {
+                    "logDriver": "awsfirelens"
+                }
+            },
+            {
+                "name": "log_router",
+                "image": "906394416424.dkr.ecr.us-east-2.amazonaws.com/aws-for-fluent-bit:latest",
+                "cpu": 0,
+                "portMappings": [],
+                "essential": true,
+                "environment": [],
+                "mountPoints": [
+                    {
+                        "sourceVolume": "firelens-conf",
+                        "containerPath": "/configs"
+                    }
+                ],
+                "volumesFrom": [],
+                "user": "0",
+                "logConfiguration": {
+                    "logDriver": "awslogs",
+                    "options": {
+                        "awslogs-create-group": "true",
+                        "awslogs-group": "firelens-container",
+                        "awslogs-region": "us-east-2",
+                        "awslogs-stream-prefix": "firelens"
+                    }
+                },
+                "firelensConfiguration": {
+                    "type": "fluentbit",
+                    "options": {
+                        "config-file-type": "file",
+                        "config-file-value": "/configs/extra.conf"
+                    }
+                }
+            }
+        ],
+        "volumes": [
+            {
+                "name": "firelens-conf",
+                "efsVolumeConfiguration": {
+                    "fileSystemId": "fs-c3c9bcbb",
+                    "rootDirectory": "/",
+                    "transitEncryption": "DISABLED",
+                    "authorizationConfig": {
+                        "iam": "DISABLED"
+                    }
+                }
+            }
+        ],
+        "cpu": "512",
+        "memory": "1024"
+    }
+}
