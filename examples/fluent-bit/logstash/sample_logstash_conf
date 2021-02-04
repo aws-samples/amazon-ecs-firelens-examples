@@ -1,0 +1,22 @@
+input {
+    beats {
+        port => 5044
+        client_inactivity_timeout => 500
+    }
+    http {
+        port => 8080
+        type => "elb_healthcheck"
+    }
+    http {
+        type => 8090
+        type => "ecs_fluent_bit_logs"
+    }
+}
+
+filter {
+    //Filtering Logs Command Here
+}
+
+output {
+    //Output Logs to Desire Destination
+}
