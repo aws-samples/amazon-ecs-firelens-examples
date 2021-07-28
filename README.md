@@ -33,6 +33,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 * [SolarWinds Loggly](examples/fluent-bit/solarwinds-loggly)
 * [Sematext Logs](examples/fluent-bit/sematext)
 * [Logstash](examples/fluent-bit/logstash)
+* [Concatenate Multiline or Stack trace log messages](examples/fluent-bit/filter-multiline)
 
 ### Fluentd Examples
 
