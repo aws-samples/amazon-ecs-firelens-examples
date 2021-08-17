@@ -1,5 +1,5 @@
 {
-	"family": "firelens-example-firehose",
+	"family": "firelens-example-data-stream",
 	"taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
 	"executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
 	"containerDefinitions": [
