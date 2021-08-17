@@ -17,6 +17,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 
 * [Send to CloudWatch Logs](examples/fluent-bit/cloudwatchlogs)
 * [Send to Kinesis Data Firehose](examples/fluent-bit/kinesis-firehose)
+* [Send to Kinesis Data Stream](examples/fluent-bit/kinesis-stream)
 * [Send to S3](examples/fluent-bit/s3)
 * [Send to Amazon ElasticSearch Service](examples/fluent-bit/amazon-elasticsearch)
 * [Enable Debug Logging](examples/fluent-bit/enable-debug-logging)
