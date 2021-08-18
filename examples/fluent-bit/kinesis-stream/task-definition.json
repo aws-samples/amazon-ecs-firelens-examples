@@ -1,5 +1,5 @@
 {
-	"family": "firelens-example-data-stream",
+	"family": "firelens-example-kinesis-data-stream",
 	"taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
 	"executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
 	"containerDefinitions": [
@@ -30,7 +30,7 @@
 				 "options": {
 					"Name": "kinesis_streams",
 					"region": "us-west-2",
-					"delivery_stream": "my-data-stream"
+					"stream": "my-data-stream"
 				}
 			},
 			"memoryReservation": 100
