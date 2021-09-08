@@ -1,0 +1,59 @@
+{
+    "family": "firelens-example-elastic",
+    "taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+    "executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+    "containerDefinitions": [
+      {
+        "name": "log_router",
+        "image": "amazon/aws-for-fluent-bit:latest",
+        "essential": true,
+        "firelensConfiguration": {
+          "type": "fluentbit",
+          "options": {
+            "enable-ecs-log-metadata": "true"
+          }
+        },
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-create-group": "true",
+            "awslogs-group": "firelens-container",
+            "awslogs-region": "<aws_region>",
+            "awslogs-stream-prefix": "firelens"
+          }
+        },
+        "memoryReservation": 50
+      },
+      {
+        "name": "example-app",
+        "image": "nginx",
+        "portMappings": [
+          {
+            "containerPort": 80
+          }
+        ],
+        "essential": true,
+        "environment": [],
+        "logConfiguration": {
+          "logDriver": "awsfirelens",
+          "secretOptions": [
+            {
+              "valueFrom": "arn:${Partition}:secretsmanager:${Region}:${Account}:secret:${SecretId}",
+              "name": "Cloud_Auth"
+            }
+          ],
+          "options": {
+            "Name": "es",
+            "Port": "9243",
+            "Tag_Key tags": "tags",
+            "Include_Tag_Key": "true",
+            "Cloud_ID": "<elastic_cloud_id>",
+            "Index": "elastic_firelens",
+            "tls": "On",
+            "tls.verify": "Off"
+          }
+        },
+        "memoryReservation": 100
+      }
+    ]
+  }
