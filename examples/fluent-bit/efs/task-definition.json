@@ -26,7 +26,7 @@
             },
             {
                 "name": "log_router",
-                "image": "906394416424.dkr.ecr.us-east-2.amazonaws.com/aws-for-fluent-bit:latest",
+                "image": "906394416424.dkr.ecr.us-east-2.amazonaws.com/aws-for-fluent-bit:stable",
                 "cpu": 0,
                 "portMappings": [],
                 "essential": true,

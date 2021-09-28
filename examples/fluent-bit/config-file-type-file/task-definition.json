@@ -5,7 +5,7 @@
 	"containerDefinitions": [
 		{
 			"essential": true,
-			"image": "11111111111.dkr.ecr.us-east-1.amazonaws.com/custom-fluent-bit:latest",
+			"image": "11111111111.dkr.ecr.us-east-1.amazonaws.com/custom-fluent-bit:stable",
 			"name": "log_router",
 			"firelensConfiguration": {
 				"type": "fluentbit",
