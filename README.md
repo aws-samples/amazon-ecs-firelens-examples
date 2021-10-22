@@ -35,6 +35,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 * [Sematext Logs](examples/fluent-bit/sematext)
 * [Logstash](examples/fluent-bit/logstash)
 * [Concatenate Multiline or Stack trace log messages](examples/fluent-bit/filter-multiline)
+* [Elastic Cloud](examples/fluent-bit/elastic-cloud)
 
 ### Fluentd Examples
 
