@@ -21,7 +21,7 @@ This is optional; it is also valid to simply specify the Cloud_Auth in options m
 },
 ```
 
-This is optional too; another option is to use regular Elasticsearch credentials to connect to Elastic Cloud in the options map:
+This is optional; you can also use regular Elasticsearch credentials to connect to Elastic Cloud in the options map:
 
 ```
 "logConfiguration": {
@@ -38,3 +38,18 @@ This is optional too; another option is to use regular Elasticsearch credentials
     }
 },
 ```
+
+This is optional; if you would like to collect logs from Fargate, just replace the first three lines of example task definition with the following:
+
+```
+    "family": "firelens-example-elastic",
+    "taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+    "executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+    "cpu": "512",
+    "memory": "1024",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+```
+
+Note that the task and execution roles are mandatory for both Amazon ECS and AWS Fargate scenarios.
