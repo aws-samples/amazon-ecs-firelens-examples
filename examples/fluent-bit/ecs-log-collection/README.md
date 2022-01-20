@@ -130,8 +130,8 @@ Your Fluent Bit configuration file should look like the following:
     Port        5170
     Chunk_Size  32
     Buffer_Size 64
-    Format      json
-	Tag         tcp-logs
+    Format      none
+    Tag         tcp-logs
 
 # Optional: append EC2 Instance Metadata to all logs
 [FILTER]
