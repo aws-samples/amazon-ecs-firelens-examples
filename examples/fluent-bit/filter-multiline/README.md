@@ -34,7 +34,7 @@ Let's go through an example shows how to use the multiline filter:
 ```
 2. Add your own custom config to `extra.conf`. In this config, you need to specify the above parser file in `[SERVICE]` section and have another `[FILTER]` section to add parsers. Here, You can also directly add a built-in parser like `go`.
 3. Build a custom Fluent Bit image using the provided Docker file (which simply copies these two customized files into the AWS for Fluent Bit image) by `docker build .`. You can place this extra config file anywhere in the Docker image *except* `/fluent-bit/etc/fluent-bit.conf`. That config file path is the path used by FireLens. Push this custom image to Amazon ECR with `ecs-cli push`.
-4. Reference the new custom Fluent Bit image ECR repo in the container definition for the FireLens container.
+4. Reference the new custom Fluent Bit image ECR repo in the container definition for the FireLens container. In this example we have also included a sample application container, which works with the example configuration and parser. The logs produced by the app will be concatenated by Fluent Bit.
 5. Reference the config file path in the FireLens configuration:
 ```
 "firelensConfiguration": {
