@@ -14,6 +14,9 @@ We want examples of as many use cases in this repository as possible! Submit a P
 * [Using EFS to store configuration files](examples/fluent-bit/efs)
 * [Specifying buffer limit size with 'Fluentd' log driver](examples/fluent-bit/log-driver-buffer-limit)
 
+### Multiline Examples
+* [Concat multiline logs using regex parsers](examples/fluent-bit/filter-multiline)
+
 ### Fluent Bit Examples
 
 * [Send to CloudWatch Logs](examples/fluent-bit/cloudwatchlogs)

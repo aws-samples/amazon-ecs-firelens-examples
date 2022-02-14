@@ -1,6 +1,6 @@
 ### FireLens Example: Concatenate Multiline or Stack trace log messages
 
-Multiline Filter is available on `aws-for-fluent-bit` >= v2.18.0. It helps to concatenate messages that originally belong to one context but were split across multiple records or log lines. Common examples are stack traces or applications that print logs in multiple lines. More information could be found in [Fluent Bit official doc](https://docs.fluentbit.io/manual/pipeline/filters/multiline-stacktrace).
+Multiline Filter is available on `aws-for-fluent-bit` >= v2.22.0. It helps to concatenate messages that originally belong to one context but were split across multiple records or log lines. Common examples are stack traces or applications that print logs in multiple lines. More information could be found in [Fluent Bit official doc](https://docs.fluentbit.io/manual/pipeline/filters/multiline-stacktrace).
 
 With this filter, you are able to use Fluent Bit built-in parses with auto detection and multi format support on:
 - go
@@ -48,5 +48,5 @@ Let's go through an example shows how to use the multiline filter:
 *Note*: 
 - `permissions.json` shows the permissions we should include in our IAM to send logs to CloudWatch.
 - the path to the parser file in `extra.conf` should be the absolute path in the image.
-- If your logs go to files instead of stdout, it iss recommended to use Multiline in [Tail](https://docs.fluentbit.io/manual/pipeline/inputs/tail#multiline-support) direclty instead of the filter.
+- If your logs go to files instead of stdout, it is recommended to use Multiline in [Tail](https://docs.fluentbit.io/manual/pipeline/inputs/tail#multiline-support) direclty instead of the filter.
 
