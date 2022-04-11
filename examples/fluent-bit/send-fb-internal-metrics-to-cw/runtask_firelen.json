@@ -1,0 +1,16 @@
+{
+    "cluster": "firelens-testing",
+    "taskDefinition": "fluentbit-metrics-to-cw-firelens-example:4",
+    "launchType": "FARGATE",
+    "networkConfiguration": {
+        "awsvpcConfiguration": {
+            "subnets": [
+                "subnet-01524d7b964f0bba9",
+                "subnet-057c87f66faa5a9b2"
+            ],
+            "securityGroups": [
+                "sg-00f737290542dbc15"
+            ]
+        }
+    }
+}
