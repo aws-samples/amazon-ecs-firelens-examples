@@ -1,0 +1,53 @@
+{
+	"family": "fluentbit-metrics-to-cw-firelens-example",
+	"networkMode": "awsvpc",
+	"executionRoleArn": "arn:aws:iam::144718711470:role/ecsExecutionRole",
+	"taskRoleArn": "arn:aws:iam::144718711470:role/ecs_task_role",
+	"requiresCompatibilities": ["FARGATE"],
+	"cpu": "1024",
+	"memory": "2048",
+	"containerDefinitions": [
+		{
+			"essential": true,
+			"image": "144718711470.dkr.ecr.us-west-2.amazonaws.com/fb_metrics_cw:latest",
+			"name": "log_router",
+			"environment": [
+				{ "name": "FLB_LOG_LEVEL", "value": "info" }, 
+				{ "name": "FLUENT_BIT_METRICS_LOG_GROUP", "value": "fluent-bit-metrics-firelens-example-parsed" },
+				{ "name": "FLUENT_BIT_METRICS_LOG_REGION", "value": "us-west-2" }
+			],
+			"firelensConfiguration": {
+				"type": "fluentbit",
+				"options": {
+					"config-file-type": "file",
+					"config-file-value": "/extra.conf"
+				}
+			},
+			"logConfiguration": {
+				"logDriver": "awslogs",
+				"options": {
+					"awslogs-group": "fb-metrics-to-cw-fluent-bit-output",
+					"awslogs-region": "ap-south-1",
+					"awslogs-create-group": "true",
+					"awslogs-stream-prefix": "firelens-container"
+				}
+			}
+		 },
+		 {
+			"essential": true,
+			"image": "144718711470.dkr.ecr.us-west-2.amazonaws.com/perf-logger-1000",
+			"name": "app",
+			"logConfiguration": {
+				"logDriver":"awsfirelens",
+				"options": {
+				   "Name": "cloudwatch_logs",
+				   "region": "ap-south-1",
+				   "log_group_name": "fb-metrics-to-cw-fluent-bit-output",
+				   "auto_create_group": "true",
+				   "log_stream_prefix": "perf-logger-vanilla-app1",
+				   "workers": "1"
+			   }
+		   }
+		 }
+	]
+}

@@ -17,6 +17,9 @@ We want examples of as many use cases in this repository as possible! Submit a P
 ### Multiline Examples
 * [Concat multiline logs using regex parsers](examples/fluent-bit/filter-multiline)
 
+### Monitoring Fluent Bit
+* [Send Fluent Bit internal metrics to CloudWatch](examples/fluent-bit/send-fb-internal-metrics-to-cw)
+
 ### Fluent Bit Examples
 
 * [Send to CloudWatch Logs](examples/fluent-bit/cloudwatchlogs)
