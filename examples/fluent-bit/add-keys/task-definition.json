@@ -30,17 +30,18 @@
 				}
 			],
 			"memoryReservation": 50
-		 },
-		 {
+		},
+		{
 			 "essential": true,
 			 "image": "httpd",
 			 "name": "app",
 			 "logConfiguration": {
 				 "logDriver":"awsfirelens",
 				 "options": {
-					"Name": "firehose",
+					"Name": "kinesis_firehose",
 					"region": "us-west-2",
-					"delivery_stream": "my-stream"
+					"delivery_stream": "my-stream",
+					"retry_limit": "2"
 				}
 			},
 			"memoryReservation": 100

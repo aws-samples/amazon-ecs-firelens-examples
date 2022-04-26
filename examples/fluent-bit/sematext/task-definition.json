@@ -29,7 +29,8 @@
                   "Port": "443",
                   "TLS": "on",
                   "Format": "json",
-                  "compress": "gzip"
+                  "compress": "gzip",
+                  "retry_limit": "2"
               },
               "secretOptions": [{
                   "name": "URI",

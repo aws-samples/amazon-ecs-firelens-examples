@@ -20,8 +20,8 @@
 				}
 			},
 			"memoryReservation": 50
-		 },
-		 {
+		},
+		{
 			 "essential": true,
 			 "image": "nginx",
 			 "name": "app",
@@ -35,7 +35,8 @@
 					"Type": "my_type",
 					"Aws_Auth": "On",
 					"Aws_Region": "us-west-2",
-					"tls": "On"
+					"tls": "On",
+					"retry_limit": "2"
 				}
 			},
 			"memoryReservation": 100

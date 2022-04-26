@@ -29,7 +29,8 @@
 				 "options": {
 					"Name": "forward",
 					"Host": "fluentdhost",
-					"Port": "24224"
+					"Port": "24224",
+					"Retry_Limit": "2"
 				}
 			},
 			"memoryReservation": 100

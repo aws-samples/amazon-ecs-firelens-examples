@@ -47,6 +47,7 @@ First, we create our Fluent Bit configuration file:
     log_group_name firelens-tutorial-$(ecs_cluster)
     log_stream_name /logs/app/$(ec2_instance_id)-$(ecs_task_id)
     auto_create_group true
+    retry_limit 2
 
 # Output for the file logs
 [OUTPUT]
@@ -56,6 +57,7 @@ First, we create our Fluent Bit configuration file:
     log_group_name firelens-tutorial-$(ecs_cluster)
     log_stream_name /logs/service/$(ec2_instance_id)-$(ecs_task_id)
     auto_create_group true
+    retry_limit 2
 ```
 
 With this output, you will get all of your logs in a single log group with log stream names that tell you whether they came from stdout or the service log file. All log streams will have the EC2 instance ID and ECS Task ID. You can of course modify these patterns to suit your own needs.
@@ -100,6 +102,7 @@ If you wish to run on Fargate, then use the Fluent Bit configuration below which
     log_group_name firelens-tutorial-$(ecs_cluster)
     log_stream_name /logs/app/$(ecs_task_id)
     auto_create_group true
+    retry_limit 2
 
 # Output for the file logs
 [OUTPUT]
@@ -109,6 +112,7 @@ If you wish to run on Fargate, then use the Fluent Bit configuration below which
     log_group_name firelens-tutorial-$(ecs_cluster)
     log_stream_name /logs/service/$(ecs_task_id)
     auto_create_group true
+    retry_limit 2
 ```
 
 Finally, with Fargate you can not store your configuration file in S3. You must bake it into a custom Fluent Bit image. Instructions can be found in the [tutorial in this repo](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/config-file-type-file).
@@ -148,6 +152,7 @@ Your Fluent Bit configuration file should look like the following:
     log_group_name firelens-tutorial-$(ecs_cluster)
     log_stream_name /logs/$(ec2_instance_id)-$(ecs_task_id)
     auto_create_group true
+    retry_limit 2
 ```
 
 Upload this file to S3 and reference it in your FireLens configuration:

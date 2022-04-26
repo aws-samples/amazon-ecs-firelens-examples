@@ -31,8 +31,8 @@
 				}
 			},
 			"memoryReservation": 100
-		 },
-		 {
+		},
+		{
 			 "essential": true,
 			 "image": "012345678910.dkr.ecr.ap-south-1.amazonaws.com/multi-streams-logger:latest",
 			 "name": "app",

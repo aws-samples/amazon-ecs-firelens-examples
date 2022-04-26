@@ -26,17 +26,18 @@
 			"memoryReservation": 50
 		 },
 		 {
-			 "essential": true,
-			 "image": "111111111111.dkr.ecr.us-west-2.amazonaws.com/multiline-example-app:latest",
-			 "name": "app",
-			 "logConfiguration": {
-				 "logDriver":"awsfirelens",
-				 "options": {
+			"essential": true,
+			"image": "111111111111.dkr.ecr.us-west-2.amazonaws.com/multiline-example-app:latest",
+			"name": "app",
+			"logConfiguration": {
+				"logDriver":"awsfirelens",
+				"options": {
 					"Name": "cloudwatch_logs",
 					"region": "us-west-2",
 					"log_group_name": "multiline-test/application",
 					"auto_create_group": "true",
-					"log_stream_prefix": "multiline-"
+					"log_stream_prefix": "multiline-",
+					"retry_limit": "2"
 				}
 			},
 			"memoryReservation": 100

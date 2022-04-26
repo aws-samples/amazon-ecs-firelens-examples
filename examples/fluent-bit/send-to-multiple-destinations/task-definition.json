@@ -24,13 +24,13 @@
 				}
 			},
 			"memoryReservation": 50
-		 },
-		 {
-			 "essential": true,
-			 "image": "httpd",
-			 "name": "app",
-			 "logConfiguration": {
-				 "logDriver":"awsfirelens"
+		},
+		{
+			"essential": true,
+			"image": "httpd",
+			"name": "app",
+			"logConfiguration": {
+				"logDriver":"awsfirelens"
 			},
 			"memoryReservation": 100
 		}

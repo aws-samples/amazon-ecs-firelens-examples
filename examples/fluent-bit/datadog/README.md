@@ -17,7 +17,8 @@ AWS recommends that you store sensitive information, like your Datadog API Key u
 	   "dd_service": "my-httpd-service",
 	   "dd_source": "httpd",
 	   "dd_tags": "project:example",
-	   "provider": "ecs"
+	   "provider": "ecs",
+	   "retry_limit": "2"
    }
 },
 ```

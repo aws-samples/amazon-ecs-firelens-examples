@@ -20,15 +20,16 @@
              "image": "httpd",
              "name": "app",
              "logConfiguration": {
-                 "logDriver":"awsfirelens",
-                 "options": {
+                "logDriver":"awsfirelens",
+                "options": {
                     "Name": "datadog",
                     "Host": "http-intake.logs.datadoghq.com",
                     "TLS": "on",
                     "dd_service": "my-httpd-service",
                     "dd_source": "httpd",
                     "dd_tags": "project:example",
-                    "provider": "ecs"
+                    "provider": "ecs",
+                    "retry_limit": "2"
                 },
                 "secretOptions": [{
                     "name": "apikey",

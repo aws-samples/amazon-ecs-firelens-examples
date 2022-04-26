@@ -113,7 +113,8 @@
             "region": "us-east-1",
             "log_group_name": "appmesh-firelens",
             "auto_create_group": "true",
-            "log_stream_prefix": "envoy-black-"
+            "log_stream_prefix": "envoy-black-",
+            "retry_limit": "2"
           }
         },
         "healthCheck": {

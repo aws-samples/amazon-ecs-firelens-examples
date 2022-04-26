@@ -20,8 +20,8 @@
 				}
 			},
 			"memoryReservation": 50
-		 },
-		 {
+		},
+		{
 			 "essential": true,
 			 "image": "httpd",
 			 "name": "app",
@@ -30,7 +30,8 @@
 				 "options": {
 					"Name": "kinesis_streams",
 					"region": "us-west-2",
-					"stream": "my-data-stream"
+					"stream": "my-data-stream",
+					"retry_limit": "2"
 				}
 			},
 			"memoryReservation": 100

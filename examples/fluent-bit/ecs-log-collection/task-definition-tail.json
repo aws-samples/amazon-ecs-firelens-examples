@@ -32,17 +32,17 @@
 			"memoryReservation": 50
 		 },
 		 {
-			 "essential": true,
-			 "image": "my-app:latest",
-			 "name": "app",
-			 "mountPoints" : [
+			"essential": true,
+			"image": "my-app:latest",
+			"name": "app",
+			"mountPoints": [
  				{
- 					"containerPath" : "/var/log/",
- 					"sourceVolume" : "var-log"
+ 					"containerPath": "/var/log/",
+ 					"sourceVolume": "var-log"
  				}
  			],
-			 "logConfiguration": {
-				 "logDriver":"awsfirelens",
+			"logConfiguration": {
+				"logDriver":"awsfirelens"
 			},
 			"memoryReservation": 100
 		}
