@@ -22,7 +22,8 @@ By default, the buffer limit will be set to `1MiB`. In order to increase or decr
 			"log_group_name": "/aws/ecs/containerinsights/$(ecs_cluster)/application",
 			"auto_create_group": "true",
 			"log_stream_name": "$(ecs_task_id)",
-			"log-driver-buffer-limit": "2097152"
+			"log-driver-buffer-limit": "2097152",
+			"retry_limit": "2"
 		}
 	},
 ```

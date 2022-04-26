@@ -15,7 +15,8 @@ By default, FireLens will send a JSON event with the raw log line encapsulated i
 			"log_key": "log",
 			"log_group_name": "/aws/ecs/containerinsights/$(ecs_cluster)/application",
 			"auto_create_group": "true",
-			"log_stream_name": "$(ecs_task_id)"
+			"log_stream_name": "$(ecs_task_id)",
+			"retry_limit": "2"
 		}
 	},
 ```

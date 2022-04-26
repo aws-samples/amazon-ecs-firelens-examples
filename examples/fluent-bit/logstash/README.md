@@ -38,6 +38,7 @@ AWS recommands that you store sensitive information (like the URI containing som
                 "URI": "/some/<token>/tag/<tag>/",
                 "Port": "8090",
                 "Format": "json",
+                "Retry_Limit": "2"
         }
 }
 ```

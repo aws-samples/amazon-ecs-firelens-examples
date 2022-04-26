@@ -20,20 +20,21 @@
 				}
 			},
 			"memoryReservation": 50
-		 },
-		 {
-			 "essential": true,
-			 "image": "httpd",
-			 "name": "app",
-			 "logConfiguration": {
-				 "logDriver":"awsfirelens",
-				 "options": {
+		},
+		{
+			"essential": true,
+			"image": "httpd",
+			"name": "app",
+			"logConfiguration": {
+				"logDriver":"awsfirelens",
+				"options": {
 					"Name": "s3",
 					"region": "us-west-2",
 					"bucket": "your-bucket",
 					"total_file_size": "1M",
 					"upload_timeout": "1m",
-					"use_put_object": "On"
+					"use_put_object": "On",
+					"retry_limit": "2"
 				}
 			},
 			"memoryReservation": 100

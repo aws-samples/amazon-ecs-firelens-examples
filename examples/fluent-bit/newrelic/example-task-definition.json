@@ -30,7 +30,8 @@
       "logConfiguration": {
         "logDriver": "awsfirelens",
         "options": {
-          "Name": "newrelic"
+          "Name": "newrelic",
+          "Retry_Limit": "2"
         },
         "secretOptions": [
           {

@@ -14,7 +14,8 @@ AWS recommends that you store sensitive information (like your Sumologic URI) us
 		"Port": "443",
 		"tls": "on",
 		"tls.verify": "off",
-		"Format": "json_lines"
+		"Format": "json_lines",
+		"Retry_Limit": "2"
 	}
 }
 ```

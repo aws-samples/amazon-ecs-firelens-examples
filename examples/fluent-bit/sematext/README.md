@@ -16,7 +16,8 @@ AWS recommends that you store sensitive information, like your Sematext `LOGS_TO
         "Port": "443",
         "TLS": "on",
         "Format": "json",
-        "compress": "gzip"
+        "Compress": "gzip",
+        "Retry_Limit": "2"
     }
 },
 ```

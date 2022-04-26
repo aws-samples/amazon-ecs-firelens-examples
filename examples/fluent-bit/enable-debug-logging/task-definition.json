@@ -27,19 +27,20 @@
 				}
 			},
 			"memoryReservation": 50
-		 },
-		 {
-			 "essential": true,
-			 "image": "nginx",
-			 "name": "app",
-			 "logConfiguration": {
-				 "logDriver":"awsfirelens",
-				 "options": {
+		},
+		{
+			"essential": true,
+			"image": "nginx",
+			"name": "app",
+			"logConfiguration": {
+				"logDriver":"awsfirelens",
+				"options": {
 					"Name": "cloudwatch",
 					"region": "us-west-2",
 					"log_group_name": "firelens-fluent-bit",
 					"auto_create_group": "true",
-					"log_stream_prefix": "from-fluent-bit"
+					"log_stream_prefix": "from-fluent-bit",
+					"retry_limit": "2"
 				}
 			},
 			"memoryReservation": 100

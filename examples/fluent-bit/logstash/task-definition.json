@@ -28,7 +28,8 @@
                     "Name":"http",
                     "Host":"api.logstash.fake.domain",
                     "Port":"8090",
-                    "Format":"json"
+                    "Format":"json",
+                    "Retry_Limit": "2"
                 },
                 "secretOptions":[
                     {

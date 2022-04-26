@@ -34,7 +34,8 @@
 				 "options": {
 					"Name": "firehose",
 					"region": "us-west-2",
-					"delivery_stream": "my-stream"
+					"delivery_stream": "my-stream",
+					"retry_limit": "2"
 				}
 			},
 			"memoryReservation": 100

@@ -25,7 +25,8 @@
                     "Name": "SignalFx",
                     "MetricName": "com.firelens.example",
                     "MetricType": "counter",
-                    "Dimensions": "ecs_cluster, container_name"
+                    "Dimensions": "ecs_cluster, container_name",
+                    "Retry_Limit": "2"
                 },
                 "secretOptions": {
                     "name": "Token",
