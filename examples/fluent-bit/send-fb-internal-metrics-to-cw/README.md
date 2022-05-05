@@ -68,10 +68,10 @@ Create a [CloudWatch Metric Filter](https://docs.aws.amazon.com/AmazonCloudWatch
 
 3. Metric Namespace
 
-3. Metric Value: `$value`
+3. Metric Value: `$.value`
 
 4. Unit: Count
 
-5. Dimensions: `fbmetric_name:$metric`
+5. Dimensions: `fbmetric_name:$.metric`
 
 You can customize the dimensions as desired, any key in the logs can be a dimension. Here we show the Fluent Bit metric name as the only dimension.
