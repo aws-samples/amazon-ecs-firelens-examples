@@ -62,7 +62,7 @@ Then, customize the included task definition with your custom Fluent Bit image a
 
 Create a [CloudWatch Metric Filter](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) on the log group to convert the JSON Logs to metrics. This can be customized as you desire. You can add additional dimensions. 
 
-1. Filter pattern: `[metric, value, time]`
+1. Filter pattern: `{ $.value = * }`
 
 2. Metric Name: Choose a name
 
