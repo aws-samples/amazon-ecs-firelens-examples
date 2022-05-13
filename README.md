@@ -20,6 +20,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 
 ### Monitoring Fluent Bit
 * [Send Fluent Bit internal metrics to CloudWatch](examples/fluent-bit/send-fb-internal-metrics-to-cw)
+* [Fluent Bit Container Health Check Options](examples/fluent-bit/health-check)
 
 ### Fluent Bit Examples
 
