@@ -1,0 +1,52 @@
+{
+	"family": "firelens-example-cloudwatch",
+	"taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+	"executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+	"containerDefinitions": [
+		{
+			"essential": true,
+			"image": "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:stable",
+			"name": "log_router",
+			"firelensConfiguration": {
+				"type": "fluentbit"
+			},
+			"healthCheck": {
+				"retries": 2,
+				"command": [
+					"CMD-SHELL",
+					"curl -f http://127.0.0.1:2020/api/v1/uptime || exit 1"
+				],
+				"timeout": 5,
+				"interval": 10,
+				"startPeriod": 30
+			},
+			"logConfiguration": {
+				"logDriver": "awslogs",
+				"options": {
+					"awslogs-group": "firelens-container",
+					"awslogs-region": "us-west-2",
+					"awslogs-create-group": "true",
+					"awslogs-stream-prefix": "firelens"
+				}
+			},
+			"memoryReservation": 50
+		},
+		{
+			"essential": true,
+			"image": "nginx",
+			"name": "app",
+			"logConfiguration": {
+				"logDriver":"awsfirelens",
+				"options": {
+					"Name": "cloudwatch_logs",
+					"region": "us-west-2",
+					"log_group_name": "app-stdout-logs",
+					"auto_create_group": "true",
+					"log_stream_name": "ecs-",
+					"retry_limit": "2"
+				}
+			},
+			"memoryReservation": 100
+		}
+	]
+}
