@@ -24,7 +24,8 @@ We want examples of as many use cases in this repository as possible! Submit a P
 
 ### Fluent Bit Examples
 
-* [Send to CloudWatch Logs](examples/fluent-bit/cloudwatchlogs)
+* [Send Logs to CloudWatch Logs](examples/fluent-bit/cloudwatchlogs)
+* [Send EMF Metrics to CloudWatch Logs](examples/fluent-bit/cloudwatchlogs-emf)
 * [Send to Kinesis Data Firehose](examples/fluent-bit/kinesis-firehose)
 * [Send to Kinesis Data Stream](examples/fluent-bit/kinesis-stream)
 * [Send to S3](examples/fluent-bit/s3)
