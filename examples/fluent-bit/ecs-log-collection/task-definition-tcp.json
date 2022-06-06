@@ -11,7 +11,7 @@
 				"type": "fluentbit",
 				"options": {
 					"config-file-type": "s3",
-					"config-file-value": "arn:aws:s3:::yourbucket/yourdirectory/tail.conf"
+					"config-file-value": "arn:aws:s3:::yourbucket/yourdirectory/tcp.conf"
 				}
 			},
 			"logConfiguration": {
