@@ -13,7 +13,8 @@ We want examples of as many use cases in this repository as possible! Submit a P
 * [Using the 'file' 'config-file-type'](examples/fluent-bit/config-file-type-file)
 * [Using EFS to store configuration files](examples/fluent-bit/efs)
 * [Specifying buffer limit size with 'Fluentd' log driver](examples/fluent-bit/log-driver-buffer-limit)
-* [How to set Fluentd and Fluent Bit input parameters in FireLens](https://aws.amazon.com/blogs/containers/how-to-set-fluentd-and-fluent-bit-input-parameters-in-firelens/)
+* [How to set Fluentd and Fluent Bit input parameters (including Mem_Buf_Limit) in FireLens](https://aws.amazon.com/blogs/containers/how-to-set-fluentd-and-fluent-bit-input-parameters-in-firelens/)
+* [How to prevent OOMKills (Out of Memory) in FireLens](examples/fluent-bit/oomkill-prevention)
 
 ### Multiline Examples
 * [Concat multiline logs using regex parsers](examples/fluent-bit/filter-multiline)
