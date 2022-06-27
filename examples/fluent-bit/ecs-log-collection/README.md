@@ -125,17 +125,30 @@ Note that when you use FireLens, ECS will inject the environment variable `FLUEN
 
 The full task definition can be found in this directory as `task-definition-tcp.json`.
 
+This example shows file system buffering enabled, and uses `Mem_Buf_Limit` to limit the TCP input's memory usage. This is optional but strongly recommended. Please read and understand the Fluent Bit official [Mem_Buf_Limit docs](https://docs.fluentbit.io/manual/administration/backpressure) and the [file system buffering docs](https://docs.fluentbit.io/manual/administration/buffering-and-storage). 
+
 Your Fluent Bit configuration file should look like the following:
 
 ```
+[SERVICE]
+    # enable file system buffering - customize this path
+    storage.path  /var/log/fluentbit
+    # ECS has a 30 second SIGTERM to SIGKILL grace period
+    Grace         30
+
 [INPUT]
-    Name        tcp
-    Listen      0.0.0.0
-    Port        5170
-    Chunk_Size  32
-    Buffer_Size 64
-    Format      none
-    Tag         tcp-logs
+    Name          tcp
+    Listen        0.0.0.0
+    Port          5170
+# please read docs on Chunk_Size and Buffer_Size: https://docs.fluentbit.io/manual/pipeline/inputs/tcp
+    Chunk_Size    32
+# this number of kilobytes is the max size of single log message that can be accepted
+    Buffer_Size   64
+    Format        none
+    Tag           tcp-logs
+# input will stop using memory and only use filesystem buffer after 50 MB
+    Mem_Buf_Limit 50MB
+    storage.type  filesystem 
 
 # Optional: append EC2 Instance Metadata to all logs
 [FILTER]
@@ -153,6 +166,8 @@ Your Fluent Bit configuration file should look like the following:
     log_stream_name /logs/$(ec2_instance_id)-$(ecs_task_id)
     auto_create_group true
     retry_limit 2
+# limit file system buffer
+    storage.total_limit_size  1G
 ```
 
 Upload this file to S3 and reference it in your FireLens configuration:
