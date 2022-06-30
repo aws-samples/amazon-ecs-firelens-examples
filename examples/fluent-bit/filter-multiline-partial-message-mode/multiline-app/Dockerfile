@@ -1,9 +1,7 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:latest
 ADD houndofbaskerville.txt /houndofbaskerville.txt
 
-RUN yum upgrade -y && yum install -y python3 pip3
-
-RUN pip3 install boto3
+RUN yum upgrade -y && yum install -y python3
 
 WORKDIR /usr/local/bin
 
