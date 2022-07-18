@@ -9,7 +9,7 @@
 			"name": "log_router",
 			"firelensConfiguration": {
 				"type": "fluentbit",
-                "options": {
+                		"options": {
 					"config-file-type": "file",
 					"config-file-value": "/extra.conf"
 				}
