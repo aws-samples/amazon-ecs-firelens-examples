@@ -12,6 +12,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 ### Basic FireLens examples
 * [Using the 'file' 'config-file-type'](examples/fluent-bit/config-file-type-file)
 * [Cross Account Log Forwarding](examples/fluent-bit/cross-account)
+* [Source multiple configs from S3 or files](examples/fluent-bit/multi-config-support)
 * [Using EFS to store configuration files](examples/fluent-bit/efs)
 * [Specifying buffer limit size with 'Fluentd' log driver](examples/fluent-bit/log-driver-buffer-limit)
 * [How to set Fluentd and Fluent Bit input parameters (including Mem_Buf_Limit) in FireLens](https://aws.amazon.com/blogs/containers/how-to-set-fluentd-and-fluent-bit-input-parameters-in-firelens/)

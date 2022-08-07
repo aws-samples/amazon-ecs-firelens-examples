@@ -1,0 +1,77 @@
+{
+    "family": "firelens-example-multi-config-support",
+    "taskRoleArn": "arn:aws:iam::xxxxxxxxxx:role/ecs_task_iam_role",
+    "executionRoleArn": "arn:aws:iam::xxxxxxxxxx:role/ecs_task_execution_role",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:init-latest",
+            "name": "log_router",
+            "firelensConfiguration": {
+                "type": "fluentbit"
+            },
+            "mountPoints": [
+                {
+                    "containerPath": "/logs/",
+                    "sourceVolume": "log"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "firelens-container",
+                    "awslogs-region": "us-west-2",
+                    "awslogs-create-group": "true",
+                    "awslogs-stream-prefix": "firelens-init"
+                }
+            },
+            "environment": [
+                {
+                    "name": "aws_fluent_bit_init_s3_1",
+                    "value": "arn:aws:s3:::your-bucket/tail-input.conf"
+                },
+                {
+                    "name": "aws_fluent_bit_init_s3_2",
+                    "value": "arn:aws:s3:::your-bucket/your-filter.conf"
+                },
+                {
+                    "name": "aws_fluent_bit_init_s3_3",
+                    "value": "arn:aws:s3:::your-bucket/your-parser.conf"
+                },
+                {
+                    "name": "aws_fluent_bit_init_s3_4",
+                    "value": "arn:aws:s3:::your-bucket/s3-output.conf"
+                }
+            ],
+            "memoryReservation": 50
+        },
+        {
+            "essential": true,
+            "image": "your-app-image",
+            "name": "app",
+            "mountPoints": [
+                {
+                    "containerPath": "/logs/",
+                    "sourceVolume": "log"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awsfirelens",
+                "options": {
+                    "Name": "cloudwatch",
+                    "region": "us-west-2",
+                    "log_group_name": "/aws/ecs/containerinsights/$(ecs_cluster)/application",
+                    "auto_create_group": "true",
+                    "log_stream_name": "$(ecs_task_id)",
+                    "retry_limit": "2"
+                }
+            },
+            "memoryReservation": 100
+        }
+    ],
+    "volumes": [
+        {
+            "name": "log"
+        }
+    ]
+}
