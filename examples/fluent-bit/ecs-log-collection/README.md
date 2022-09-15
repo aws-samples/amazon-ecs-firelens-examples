@@ -144,6 +144,7 @@ Your Fluent Bit configuration file should look like the following:
     Chunk_Size    32
 # this number of kilobytes is the max size of single log message that can be accepted
     Buffer_Size   64
+# If you set this to json you might get error: "invalid JSON message, skipping" if your logs are not actually JSON
     Format        none
     Tag           tcp-logs
 # input will stop using memory and only use filesystem buffer after 50 MB
