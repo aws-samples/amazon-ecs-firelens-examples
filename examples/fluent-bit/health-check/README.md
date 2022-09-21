@@ -6,6 +6,8 @@ As explained in the [ECS Health Check documentation](https://docs.aws.amazon.com
 
 If you make the FireLens container non-essential, its health status will still be displayed in the ECS Console and it will be returned in the output of [DescribeTasks](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeTasks.html). 
 
+Please note, health checks are not the only option for monitoring Fluent Bit. Fluent Bit also has [built-in metrics](https://docs.fluentbit.io/manual/administration/monitoring). We have a [tutorial on how to send these metrics to CloudWatch](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/send-fb-internal-metrics-to-cw) in this repo. 
+
 ## Health Check Options
 
 ### Output Metric Based Health Check
