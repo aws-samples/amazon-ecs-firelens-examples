@@ -23,6 +23,8 @@ See the [task-definition-output-metrics-healthcheck.json](task-definition-output
 * If inputs are blocked/paused or are not receiving logs, the output metrics will not be affected and will still look positive. Thus, this health check can not cover all possible failure scenarios.
 * If the destination is down, then all of your Fluent Bit containers across your entire fleet will become unhealthy all at the same time. If the FireLens container is essential, all tasks in your service would become unhealthy and be replaced at the same time. 
 
+If this option is appealing but one of the drawbacks is a deal-breaker, then you may want to monitor Fluent Bit's plugin metrics instead. The health check endpoint and options are just built on top of the Fluent Bit [built-in metrics](https://docs.fluentbit.io/manual/administration/monitoring). We have a [tutorial on how to send these metrics to CloudWatch](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/send-fb-internal-metrics-to-cw) in this repo. 
+
 
 ### Simple Uptime Health Check
 
