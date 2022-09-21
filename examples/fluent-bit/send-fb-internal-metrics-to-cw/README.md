@@ -41,7 +41,7 @@ This example contains the following:
 1. Custom Fluent Bit configuration that:
      * Enables the [Fluent Bit monitoring endpoint](https://docs.fluentbit.io/manual/administration/monitoring)
      * Uses the [exec input](https://docs.fluentbit.io/manual/pipeline/inputs/exec) to scrape that endpoint and output the results as logs
-     * Filters out everything except for output, metrics, this can be customized/altered
+     * *Filters out everything except for output metrics*, this can be customized/altered. Un-comment the lines in the provided configuration file and remove the filter that exludes metrics not for outputs. 
      * Parses the data out of the logs to create a JSON event
      * Sends the JSON to CloudWatch as logs
 2. A custom parser file that can parse the prometheus text into a structured JSON log. 
