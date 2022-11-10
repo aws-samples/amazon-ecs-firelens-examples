@@ -1,0 +1,61 @@
+{
+	"family": "firelens-example-cloudwatch",
+	"taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+	"executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+	"containerDefinitions": [
+		{
+			"essential": true,
+			"image": "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:stable",
+			"name": "log_router",
+			"firelensConfiguration": {
+				"type": "fluentbit"
+			},
+			"logConfiguration": {
+				"logDriver": "awslogs",
+				"options": {
+					"awslogs-group": "firelens-container",
+					"awslogs-region": "us-west-2",
+					"awslogs-create-group": "true",
+					"awslogs-stream-prefix": "firelens"
+				}
+			},
+			"memoryReservation": 50
+		},
+		{
+            "essential": true,
+            "image": "public.ecr.aws/aws-observability/aws-otel-collector:latest",
+            "name": "aws-otel-collector",
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "aws-otel-collector",
+                    "awslogs-region": "us-west-1",
+                    "awslogs-create-group": "true",
+                    "awslogs-stream-prefix": "ecs-"
+                }
+            },
+            "memoryReservation": 100,
+            "command": [
+                "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml"
+            ]
+        },
+		{
+			 "essential": true,
+			 "image": "nginx",
+			 "name": "app",
+			 "logConfiguration": {
+				"logDriver":"awsfirelens",
+				"options": {
+					"Name": "cloudwatch_logs",
+					"region": "us-west-2",
+					"log_key": "log",
+					"log_group_name": "ecs/application",
+					"auto_create_group": "true",
+					"log_stream_prefix": "app-",
+					"retry_limit": "2"
+				}
+			},
+			"memoryReservation": 100
+		}
+	]
+}
