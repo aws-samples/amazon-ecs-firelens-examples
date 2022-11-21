@@ -14,7 +14,7 @@ Please note, health checks are not the only option for monitoring Fluent Bit. Fl
 
 Fluent Bit's [http monitoring interface has a health check option](https://docs.fluentbit.io/manual/administration/monitoring#health-check-for-fluent-bit). As explained in its documentation, the healthy or unhealthy status is based on the output plugin metrics- are the outputs successfully sending logs or not? This is a "deep" health check. You can configure the error threshold and the period of evaluate errors in the Fluent Bit configuration. 
 
-See the [task-definition-output-metrics-healthcheck.json](task-definition-output-metrics-healthcheck.json) in this directory. This health check requires a custom config file, to understand how to use custom configuration files please see the base [config-file-type](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/config-file-type-file) example. 
+See the [task-definition-output-metrics-healthcheck.json](task-definition-output-metrics-healthcheck.json) in this directory. This health check uses the built-in `/fluent-bit/configs/output-metrics-healthcheck.conf` configuration available in AWS for Fluent Bit 2.29.1+. This means you do not need to build a custom image to use this health check. If you still want to use a custom image built with your custom configuration, the `output-metrics-healthcheck.conf` shows the configuration required and the [config-file-type](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/config-file-type-file) example in this guide shows how to use a custom config file. 
 
 *Benefits:*
 * If Fluent Bit can not send logs to your destination- if it can not serve its business purpose- it will become unhealthy. 
