@@ -11,7 +11,7 @@
 				"type": "fluentbit",
 				"options": {
 					"config-file-type": "file",
-					"config-file-value": "/output-metrics-healthcheck.conf"
+					"config-file-value": "/fluent-bit/configs/output-metrics-healthcheck.conf"
 				}
 			},
 			"healthCheck": {

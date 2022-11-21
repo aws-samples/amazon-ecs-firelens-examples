@@ -20,7 +20,7 @@
 				"type": "fluentbit",
 				"options": {
 					"config-file-type": "file",
-					"config-file-value": "/extra.conf"
+					"config-file-value": "/fluent-bit/configs/plugin-metrics-to-cloudwatch.conf"
 				}
 			},
 			"logConfiguration": {
