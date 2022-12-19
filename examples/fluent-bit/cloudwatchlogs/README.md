@@ -1,12 +1,21 @@
-### FireLens Example: Logging to CloudWatch Logs with Fluent Bit
+## FireLens Example: Logging to CloudWatch Logs with Fluent Bit
 
-For documentation on Fluent Bit & CloudWatch, see: [amazon-cloudwatch-logs-for-fluent-bit](https://github.com/aws/amazon-cloudwatch-logs-for-fluent-bit)
+### CloudWatch Golang Plugin vs CloudWatch C Plugin
 
-#### CloudWatch configuration options
+There are two Fluent Bit output plugins for sending to Amazon CloudWatch Logs:
+* Plugin name `cloudwatch`: the original golang plugin with extensive templating support, including injecting ECS metadata into log stream and group name templates. See its [documentation](https://github.com/aws/amazon-cloudwatch-logs-for-fluent-bit). This directory contains an example task definition thats demonstrates this plugin's ability to inject ECS task metadata into log group and stream names.
+* Plugin name `cloudwatch_logs`: the newer and higher performance cloudwatch plugin built in C in the Fluent Bit upstream code base. It has more limited log group and stream name templating support. See its [documentation](https://docs.fluentbit.io/manual/pipeline/outputs/cloudwatch). This directory contains an example task definition for the high performance plugin without templating. The log stream name will be set to be `{log_stream_prefix}{log tag}` and [FireLens sets the log tag](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#firelens-tag-and-match-pattern-and-generated-config) to be `{container name in task definition}-firelens-{task ID}`. So the log stream name for this example will be `stdout-stderr-app-firelens-{task ID}`. 
 
-To minimize the possibility of log loss when using the CloudWatch plugin, consider using the recommended configuration outlined in the [CloudWatch Recommendations](https://github.com/aws/aws-for-fluent-bit/issues/340) issue.
 
-#### What if I just want the raw log line from the container to appear in CloudWatch?
+For more on the AWS Go outputs vs AWS C outputs, check out the [FAQ entry in our debugging guide](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#aws-go-plugins-vs-aws-core-c-plugins). 
+
+#### Recommended cloudwatch_logs configuration options
+
+To minimize the possibility of log loss when sending to CloudWatch, consider using the recommended configuration outlined in the [CloudWatch Recommendations](https://github.com/aws/aws-for-fluent-bit/issues/340) issue.
+
+### What if I just want the raw log line from the container to appear in CloudWatch?
+
+The example shown here is for the `cloudwatch` plugin, however, the `cloudwatch_logs` plugin has the same `log_key` option.
 
 By default, FireLens will send a JSON event with the raw log line encapsulated in a `log` field. ECS Metadata will also be added. If you just want the raw log line, add the `log_key` option to your log configuration:
 
