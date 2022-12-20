@@ -53,9 +53,9 @@ First, we create a Fluent Bit TCP input and cloudwatch output for the EMF:
 
 Fluent Bit will accept EMF over TCP port `25888`. Build this config file into a custom Fluent Bit image as shown in the base [config-file-type](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/config-file-type-file) example. 
 
-Now we configure the EMF libraries in your app to send EMF to TCP port `25888`/ The setup steps are similar to using the [CW Agent to collect EMF in ECS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Generation_CloudWatch_Agent.html). 
+Now we configure the EMF libraries in your app to send EMF to TCP port `25888`. The setup steps here are similar to using the [CW Agent to collect EMF in ECS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Generation_CloudWatch_Agent.html). Go to the section for your chosen network mode. 
 
-#### Bridge Mode
+#### If you are using Bridge Network Mode
 
 If your network mode is `bridge`, you can add the following env var to your app container definition to tell the library where to emit EMF. This env var uses a Docker hostname inserted by the link to the firelens container:
 
@@ -63,23 +63,42 @@ If your network mode is `bridge`, you can add the following env var to your app 
 "name": "app",
 "links": [ "fluentbit" ], // the link is based on the container name
 "environment": [{
-                "name": "AWS_EMF_AGENT_ENDPOINT",
-                "value": "tcp://fluentbit:25888"
-              }]
+    "name": "AWS_EMF_AGENT_ENDPOINT",
+    "value": "tcp://fluentbit:25888"
+}]
 ```
+
+The value `tcp://fluentbit:25888` comes from:
+1. `fluentbit` hostname is set from the docker link.
+2. Port `25888` is the port the Fluent Bit TCP port is configured to listen on.
 
 And then setup a port mapping on the FireLens container:
 ```
 "name": "fluentbit",
 "portMappings": [{
-                  "protocol": "tcp",
-                  "containerPort": 25888
-              }],
+    "protocol": "tcp",
+    "containerPort": 25888
+}],
 ```
 
-See the full task definition in the [emf-over-tcp](emf-over-tcp) directory.
+See the full task definition in the [emf-over-tcp](emf-over-tcp) directory. The setup steps here are again similar to using the [CW Agent to collect EMF in ECS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Generation_CloudWatch_Agent.html).
 
-### AWSVPC or Host Mode
+#### Note on FLUENT_HOST hostname
+
+The above linked steps and the bridge network mode example task definition in this tutorial use a Docker link to create a hostname in the app container for your Fluent Bit/FireLens container. It should be noted that [FireLens will set a hostname in app containers for Fluent Bit](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html) called `FLUENT_HOST`. The value of `FLUENT_HOST` is just the IP address of the Fluent Bit container. However, the AWS EMF libraries require an environment variable to reach the collection agent:
+
+```
+"environment": [
+	{
+        "name": "AWS_EMF_AGENT_ENDPOINT",
+        "value": "tcp://fluentbit:25888"
+    }
+],
+```
+
+It is not possible to reference the value of the `FLUENT_HOST` environment variable in the value of this environment variable. However, if you are constructing EMF directly in your application code and sending it over TCP instead of using the AWS EMF libraries, using `FLUENT_HOST` to get the IP of Fluent Bit may be a desirable option.
+
+### If you are using AWSVPC or Host Network Mode
 
 If you are using host or AWSVPC network mode, the FireLens container can be reached on localhost. Note that for host mode, the host ENI is used, and so Fluent Bit must be the only process on the host using this port. 
 
