@@ -1,5 +1,9 @@
 ### FireLens Example: Using the 'file' config type
 
+**NOTE**: *AWS for Fluent Bit distro now supports an `init` tag for ECS customers which can do the work to import multiple config files from your image or an S3 bucket into the final Fluent Bit configuration*. It can be used as an alternative to the FireLens `config-file-type` and `config-file-value` options. Check out the [init documentation](https://github.com/aws/aws-for-fluent-bit#using-the-init-tag). 
+
+---
+
 This is the same config example as the "Adding custom keys to log events" example. In this though, we specifically look at how to use the 'file' 'config-file-type' in FireLens.
 
 Let's go through it step by step.
