@@ -1,6 +1,6 @@
-### FireLens Example: Specifying buffer limit size with 'Fluentd' log driver
+### FireLens Example: Setting awsfirelens log driver buffer limit size
 
-`log-driver-buffer-limit` option is now supported on ECS EC2 and ECS Fargate with PV1.4. This setting helps FireLens to configure the Fluentd Docker Log Driver field [fluentd-buffer-limit](https://docs.docker.com/config/containers/logging/fluentd/#fluentd-buffer-limit). 
+The `log-driver-buffer-limit` option is now supported on ECS EC2 and ECS Fargate with PV1.4+. This setting tells FireLens to configure the Fluentd Docker Log Driver field [fluentd-buffer-limit](https://docs.docker.com/config/containers/logging/fluentd/#fluentd-buffer-limit). This setting applies to the log driver that FireLens uses [under the hood](https://aws.amazon.com/blogs/containers/under-the-hood-firelens-for-amazon-ecs-tasks/) to capture stdout & stderr container logs and send them to Fluentd or Fluent Bit.
 
 As we know, FireLens is a container log router for Amazon ECS and AWS Fargate that gives customers extensibility to use the breadth of services at AWS or partner solutions for log analytics and storage. FireLens works with Fluentd and Fluent Bit and makes it easy to use these two popular open source logging projects.
 
