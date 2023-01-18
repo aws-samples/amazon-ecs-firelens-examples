@@ -28,7 +28,7 @@
 			 "logConfiguration": {
 				 "logDriver":"awsfirelens",
 				 "options": {
-					"Name": "es",
+					"Name": "opensearch",
 					"Host": "vpc-fake-domain-ke7thhzo07jawrhmz6mb7ite7y.us-west-2.es.amazonaws.com",
 					"Port": "443",
 					"Index": "my_index",
