@@ -1,0 +1,20 @@
+[
+    {
+       "Rules":[
+          {
+             "ResourceType":"index",
+             "Resource":[
+                "index/MY_COLLECTION_NAME/*"
+             ],
+             "Permission":[
+                "aoss:CreateIndex",
+                "aoss:UpdateIndex",
+                "aoss:WriteDocument"
+             ]
+          }
+       ],
+       "Principal":[
+          "arn:aws:iam::123456789012:role/ecs_task_iam_role"
+       ]
+    }
+]
