@@ -27,6 +27,8 @@
                    "TLS":"on",
                    "TLS.verify":"off",
                    "Format":"json",
+                   "Json_Date_Format":"iso8601",
+                   "Json_Date_Key":"timestamp",
                    "Header":"Content-Type application/json; charset=utf-8",
                    "Port":"443"
                    "Allow_Duplicated_Headers":"false",
