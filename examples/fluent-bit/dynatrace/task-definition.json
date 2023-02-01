@@ -1,0 +1,45 @@
+{
+    "family": "firelens-example-dynatrace",
+    "taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+    "executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:stable",
+            "name": "log_router",
+            "firelensConfiguration":{
+                "type":"fluentbit",
+                "options":{
+                    "enable-ecs-log-metadata":"true"
+                }
+            },
+            "memoryReservation": 50
+         },
+         {
+             "essential": true,
+             "image": "httpd",
+             "name": "app",
+             "logConfiguration": {
+                 "logDriver":"awsfirelens",
+                 "options": {
+                   "Name":"http",
+                   "Host":"{your-environment-id}.live.dynatrace.com",
+                   "TLS":"on",
+                   "TLS.verify":"off",
+                   "Format":"json",
+                   "Json_Date_Format":"iso8601",
+                   "Json_Date_Key":"timestamp",
+                   "Header":"Content-Type application/json; charset=utf-8",
+                   "Port":"443"
+                   "Allow_Duplicated_Headers":"false",
+                   "retry_limit":"2"
+                },
+                "secretOptions": [{
+                    "name": "URI",
+                    "valueFrom": "arn:${Partition}:secretsmanager:${Region}:${Account}:secret:${SecretId}"
+                }]
+            },
+            "memoryReservation": 100
+        }
+    ]
+}
