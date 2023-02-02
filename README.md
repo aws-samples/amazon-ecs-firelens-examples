@@ -42,6 +42,7 @@ We want examples of as many use cases in this repository as possible! Submit a P
 * [Parse Envoy Access Logs from AWS App Mesh](examples/fluent-bit/parse-envoy-app-mesh)
 * [Send to multiple destinations](examples/fluent-bit/send-to-multiple-destinations)
 * [Add custom metadata to logs](examples/fluent-bit/add-keys)
+* [Dynatrace monitoring](examples/fluent-bit/dynatrace)
 * [Datadog monitoring](examples/fluent-bit/datadog)
 * [SignalFx monitoring](examples/fluent-bit/signalfx)
 * [New Relic Logs](examples/fluent-bit/newrelic)
