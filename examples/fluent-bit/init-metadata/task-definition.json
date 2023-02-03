@@ -1,0 +1,42 @@
+{
+    "family": "firelens-example-init-metadata",
+    "taskRoleArn": "arn:aws:iam::xxxxxxxxxx:role/ecs_task_iam_role",
+    "executionRoleArn": "arn:aws:iam::xxxxxxxxxx:role/ecs_task_execution_role",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:init-latest",
+            "name": "log_router",
+            "firelensConfiguration": {
+                "type": "fluentbit"
+            },
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "firelens-container",
+                    "awslogs-region": "us-west-2",
+                    "awslogs-create-group": "true",
+                    "awslogs-stream-prefix": "firelens-init"
+                }
+            },
+            "memoryReservation": 50
+        },
+        {
+            "essential": true,
+            "image": "your-app-image",
+            "name": "app",
+            "logConfiguration": {
+                "logDriver": "awsfirelens",
+                "options": {
+                    "Name": "cloudwatch_logs",
+                    "region": "${AWS_REGION}",
+                    "log_group_name": "${ECS_CLUSTER}/application",
+                    "auto_create_group": "true",
+                    "log_stream_name": "${ECS_TASK_ID}",
+                    "retry_limit": "2"
+                }
+            },
+            "memoryReservation": 100
+        }
+    ]
+}
