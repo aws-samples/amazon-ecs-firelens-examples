@@ -18,6 +18,13 @@ We want examples of as many use cases in this repository as possible! Submit a P
 * [How to set Fluentd and Fluent Bit input parameters (including Mem_Buf_Limit) in FireLens](https://aws.amazon.com/blogs/containers/how-to-set-fluentd-and-fluent-bit-input-parameters-in-firelens/)
 * [How to prevent OOMKills (Out of Memory) in FireLens](examples/fluent-bit/oomkill-prevention)
 
+### AWS for Fluent Bit init tag examples
+An [init tag](https://github.com/aws/aws-for-fluent-bit#using-the-init-tag) is distributed with each release, it adds useful features for ECS customers. 
+
+* [Source multiple configs from S3 or files](examples/fluent-bit/multi-config-support)
+* [Use ECS Task ID and ECS Metadata in configuration](examples/fluent-bit/init-metadata)
+* [Template log group or log stream name using ECS Task ID and ECS Metadata](examples/fluent-bit/init-metadata)
+
 ### Multiline Examples
 * [Concat multiline logs using regex parsers](examples/fluent-bit/filter-multiline)
 * [Concat partial/split container logs](examples/fluent-bit/filter-multiline-partial-message-mode)
