@@ -1,11 +1,11 @@
 {
-	"family": "firelens-example-opensearch",
+	"family": "firelens-example-opensearch-serverless",
 	"taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
 	"executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
 	"containerDefinitions": [
 		{
 			"essential": true,
-			"image": "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:stable",
+			"image": "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:2.30.0",
 			"name": "log_router",
 			"firelensConfiguration": {
 				"type": "fluentbit"
@@ -34,6 +34,7 @@
 					"Index": "my_index",
 					"Aws_Auth": "On",
 					"Aws_Region": "us-west-2",
+					"Aws_Service_Name": "aoss",
 					"Suppress_Type_Name": "On",
 					"tls": "On",
 					"retry_limit": "2"
