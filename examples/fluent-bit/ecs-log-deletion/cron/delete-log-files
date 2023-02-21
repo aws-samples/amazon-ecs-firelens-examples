@@ -1,0 +1,1 @@
+0 0 * * * find /var/log/ -type f -mmin +10080 -execdir rm -f -- '{}' ';'
