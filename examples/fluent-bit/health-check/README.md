@@ -14,7 +14,7 @@ Please note, health checks are not the only option for monitoring Fluent Bit. Fl
 
 Fluent Bit's [http monitoring interface has a health check option](https://docs.fluentbit.io/manual/administration/monitoring#health-check-for-fluent-bit). As explained in its documentation, the healthy or unhealthy status is based on the output plugin metrics- are the outputs successfully sending logs or not? This is a "deep" health check. You can configure the error threshold and the period of evaluate errors in the Fluent Bit configuration. 
 
-See the [task-definition-output-metrics-healthcheck.json](task-definition-output-metrics-healthcheck.json) in this directory. This health check uses the built-in `/fluent-bit/configs/output-metrics-healthcheck.conf` configuration available in AWS for Fluent Bit 2.29.1+. This means you do not need to build a custom image to use this health check. If you still want to use a custom image built with your custom configuration, the `output-metrics-healthcheck.conf` shows the configuration required and the [config-file-type](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/config-file-type-file) example in this guide shows how to use a custom config file. 
+See the [task-definition-output-metrics-healthcheck.json](task-definition-output-metrics-healthcheck.json) in this directory. This health check uses the built-in `/fluent-bit/configs/output-metrics-healthcheck.conf` configuration available in AWS for Fluent Bit 2.29.1+. This means you do not need to build a custom image to use this health check. If you still want to use a custom image built with your custom configuration, the `monitoring-server-healthcheck.conf` (and DIY section below) shows the configuration required and the [config-file-type](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/config-file-type-file) example in this guide shows how to use a custom config file. 
 
 *Benefits:*
 * If Fluent Bit can not send logs to your destination- if it can not serve its business purpose- it will become unhealthy. 
@@ -25,10 +25,27 @@ See the [task-definition-output-metrics-healthcheck.json](task-definition-output
 
 If this option is appealing but one of the drawbacks is a deal-breaker, then you may want to monitor Fluent Bit's plugin metrics instead. The health check endpoint and options are just built on top of the Fluent Bit [built-in metrics](https://docs.fluentbit.io/manual/administration/monitoring). We have a [tutorial on how to send these metrics to CloudWatch](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/send-fb-internal-metrics-to-cw) in this repo. 
 
+#### DIY setup
+
+If you do not use the built-in configuration for this health check, you will need to add the following to your configuration file to use this healthcheck. This is the same the `monitoring-server-healthcheck.conf` included in this directory. 
+
+```
+[SERVICE]
+    HTTP_Server  On
+    HTTP_Listen  0.0.0.0
+    HTTP_PORT    2020
+    # https://docs.fluentbit.io/manual/administration/monitoring#health-check-for-fluent-bit
+    Health_Check On 
+    # customize error and retry thresholds and evaluation period as desired
+    HC_Errors_Count 5 
+    HC_Retry_Failure_Count 5 
+    HC_Period 5
+```
+
 
 ### Simple Uptime Health Check
 
-Fluent Bit's [monitoring interface](https://docs.fluentbit.io/manual/administration/monitoring#http-server) has a `/api/v1/uptime` path which can be queried for a simple "is it responsive" health check. This is a "shallow" health check. It is built on the assumption that if the monitoring uptime interface returns a response, then Fluent Bit is still running and is not frozen or unresponsive. The Fluent Bit monitoring interface is widely used by customers who use it to get prometheus format metrics from Fluent Bit, and the AWS for Fluent Bit team has not received many bug reports for this interface over the years. 
+Fluent Bit's [monitoring interface](https://docs.fluentbit.io/manual/administration/monitoring#http-server) has a `/api/v1/uptime` path which can be queried for a simple "is it responsive" health check. This is a "shallow" health check. It is built on the assumption that if the monitoring uptime interface returns a response, then Fluent Bit is still running and is not frozen or unresponsive. The Fluent Bit monitoring interface is widely used by customers who use it to get prometheus format metrics from Fluent Bit, and the AWS for Fluent Bit team has not received many bug reports for this interface over the years. You can use the buit-in `/fluent-bit/configs/output-metrics-healthcheck.conf` configuration available in AWS for Fluent Bit 2.29.1+. While the config enables the output metrics healthcheck above, it also enables the monitoring server which is used by this simple uptime healthcheck. See the DIY section below for information on setting up this healthcheck via your own custom configuration.
 
 See the [task-definition-uptime-healthcheck.json](task-definition-uptime-healthcheck.json) in this directory. 
 
@@ -37,19 +54,48 @@ See the [task-definition-uptime-healthcheck.json](task-definition-uptime-healthc
 
 *Drawbacks:*
 * It is a very shallow health check, Fluent Bit could be completely failing to send logs but as long as its still responsive on the monitoring interface, it will be marked as healthy.
-* AWS for Fluent Bit team has only recommended/documented this health check option for users since April 2022, so if you are reading this close to that date, it has not yet been very widely tested with real production workloads. 
+* AWS for Fluent Bit team has only recommended/documented this health check option for users since April 2022, so if you are reading this close to that date, it has not yet been very widely tested with real production workloads.
+
+#### DIY setup
+
+If you do not use the built-in configuration for this health check, you will need to add the following to your configuration file to use this healthcheck:
+
+```
+[SERVICE]
+    HTTP_Server  On
+    HTTP_Listen  0.0.0.0
+    HTTP_PORT    2020
+```
 
 ### [Not recommended] TCP Input Health Check
 
 Finally, another health check option is to try to ingest logs into Fluent Bit, and have the health check validate that the logs are accepted. This can be done using the netcat utility and the [TCP Input](https://docs.fluentbit.io/manual/pipeline/inputs/tcp). Logs ingested for the health check can be discarded via the null output. This health check is an attempt at a "deep" health check that is based on the assumption that Fluent Bit must be responsive if it will accept new logs via the TCP input. If it is down or frozen or nonresponsive, the netcat command will fail.
 
-See the [task-definition-tcp-healthcheck.json](task-definition-tcp-healthcheck.json) in this directory. This health check does not require any extra configuration because [FireLens](https://aws.amazon.com/blogs/containers/under-the-hood-firelens-for-amazon-ecs-tasks/) automatically generates [the TCP input and null output for the health check](https://github.com/aws-samples/amazon-ecs-firelens-under-the-hood/blob/mainline/generated-configs/fluent-bit/generated_by_firelens.conf#L10).
+See the [task-definition-tcp-healthcheck.json](task-definition-tcp-healthcheck.json) in this directory. This health check does not require any extra configuration because [FireLens](https://aws.amazon.com/blogs/containers/under-the-hood-firelens-for-amazon-ecs-tasks/) automatically generates [the TCP input and null output for the health check](https://github.com/aws-samples/amazon-ecs-firelens-under-the-hood/blob/mainline/generated-configs/fluent-bit/generated_by_firelens.conf#L10). *It should be noted that the link in the last sentence is an example of a generated configuration for a specific task definition, [please read and understand it carefully](https://github.com/aws-samples/amazon-ecs-firelens-under-the-hood/tree/mainline/generated-configs/fluent-bit)*. If you would like to setup this health check yourself, and you do not use the auto-generated FireLens config (for example, because you followed the [How to set input parameters in FireLens blog](https://aws.amazon.com/blogs/containers/how-to-set-fluentd-and-fluent-bit-input-parameters-in-firelens/), see the DIY section below).
 
 *Benefits:*
 * Is a "deeper" health check that attempts to verify that Fluent Bit is still accepting logs. 
 
 *Drawbacks:*
 * AWS for Fluent Bit team has recommended this health check to users since the launch of FireLens at the end of 2019. We chose to build the config for the health check into FireLens to provide all users with an easy deep health check option. Since then, a minority of users have reported that the health check appears to be susceptible to false positives where Fluent Bit is marked as unhealthy despite continuing to function. Unfortunately, AWS for Fluent Bit team has never been able to independently reproduce or root-cause these failures. *However, because we have received multiple similar reports of bad behavior from this health check over time, we no longer recommend it.* 
+
+#### DIY setup
+
+If you do not use the built-in configuration for this health check, you will need to add the following to your configuration file to use this healthcheck:
+
+```
+# input to recieve health check logs
+[INPUT]
+    Name tcp
+    Tag firelens-healthcheck
+    Listen 127.0.0.1
+    Port 8877
+
+# null output so that health check logs do not go anywhere
+[OUTPUT]
+    Name null
+    Match firelens-healthcheck
+```
 
 ## Recommended settings for new users
 
