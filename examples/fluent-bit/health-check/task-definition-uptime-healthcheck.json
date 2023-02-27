@@ -8,7 +8,11 @@
 			"image": "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:stable",
 			"name": "log_router",
 			"firelensConfiguration": {
-				"type": "fluentbit"
+				"type": "fluentbit",
+				"options": {
+					"config-file-type": "file",
+					"config-file-value": "/fluent-bit/configs/output-metrics-healthcheck.conf"
+				}
 			},
 			"healthCheck": {
 				"retries": 2,
