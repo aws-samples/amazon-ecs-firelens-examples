@@ -50,7 +50,7 @@ This example contains the following:
 
 This is necessary because currently, the [Fluent Bit metrics](https://docs.fluentbit.io/manual/pipeline/inputs/fluentbit-metrics) and the [Prometheus Metrics](https://docs.fluentbit.io/manual/pipeline/inputs/prometheus-scrape-metrics) inputs do not emit their data as logs, and use a separate metric pipeline that most Fluent Bit plugins do not support. However, if we use the exec input to curl the metrics, then the outputted prometheus data is turned into logs which we can parse and process easily. In the future, this experience may be improved.
 
-For a quick setup, use the built-in plugin metrics configuration file available in AWS for Fluent Bit 2.29.1+. This built-in configuration means that you do not have to build a custom Fluent Bit image. However, please note that this built-in configuration enables all plugin metrics (not just output plugin metrics).
+For a quick setup, use the [built-in plugin metrics configuration file](https://github.com/aws/aws-for-fluent-bit/blob/mainline/configs/plugin-metrics-to-cloudwatch.conf) available in AWS for Fluent Bit 2.29.1+. This built-in configuration means that you do not have to build a custom Fluent Bit image. However, please note that this built-in configuration enables all plugin metrics (not just output plugin metrics).
 
 ```
 			"firelensConfiguration": {
@@ -62,11 +62,23 @@ For a quick setup, use the built-in plugin metrics configuration file available 
 			},
 ```
 
+#### DIY Setup
+
+If you have your own custom configuration already, you can import/include the built-in config:
+
+```
+@INCLUDE /fluent-bit/configs/plugin-metrics-to-cloudwatch.conf
+```
+
+Please note that the [built-in config](https://github.com/aws/aws-for-fluent-bit/blob/mainline/configs/plugin-metrics-to-cloudwatch.conf) includes a `[SERVICE]` section. This section can only be set once, so importing the built-in means that you can not have your own custom `[SERVICE]` section..
+
+Alternatively, the [`extra.conf`](extra.conf) and [`fb_metrics_parser.conf`](fb_metrics_parser.conf) in this directory show the necessary config content. 
+
 Please note, you *must set the environment variables described in step 2 and the metric filter in step 3*.
 
 ### 2. Deploy the FireLens task
 
-Please follow the FireLens example for [config-file-type](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/config-file-type-file) and use the `Dockerfile` and `extra.conf` from this example. 
+Please follow the FireLens example for [config-file-type](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/config-file-type-file) and use the [`Dockerfile`](Dockerfile) and [`extra.conf`](extra.conf) from this example. 
 
 Then, customize the included task definition with your custom Fluent Bit image and set these environment variables to configure where the metric logs are sent:
 
@@ -102,7 +114,7 @@ To also send storage metrics, the technique the same. The difference is that Flu
 
 ### Quick setup: use built-in configuration
 
-For a quick setup, use the built-in plugin + storage metrics configuration file available in AWS for Fluent Bit 2.29.1+. This built-in configuration means that you do not have to build a custom Fluent Bit image. However, please note that this built-in configuration enables all plugin metrics (not just output plugin metrics).
+For a quick setup, use the [built-in plugin + storage metrics configuration file](https://github.com/aws/aws-for-fluent-bit/blob/mainline/configs/plugin-and-storage-metrics-to-cloudwatch.conf) available in AWS for Fluent Bit 2.29.1+. This built-in configuration means that you do not have to build a custom Fluent Bit image. However, please note that this built-in configuration enables all plugin metrics (not just output plugin metrics).
 
 ```
 			"firelensConfiguration": {
@@ -145,7 +157,15 @@ Please note, *you are not done yet, you must still create the metric filters on 
     Parser json
 ```
 
-The `extra.conf` file in this directory has the configuration to send storage metrics commented out on lines 42 to 63. Un-commment these lines (remove the '#' signs) to enable sending this data to CW. The data can be sent by the same output as the prometheus metrics. 
+The [`extra.conf`](extra.conf) file in this directory has the configuration to send storage metrics commented out on lines 42 to 63. Un-commment these lines (remove the '#' signs) to enable sending this data to CW. The data can be sent by the same output as the prometheus metrics. 
+
+Alternatively you can import/include the built-in config:
+
+```
+@INCLUDE /fluent-bit/configs/plugin-and-storage-metrics-to-cloudwatch.conf
+```
+
+Please note that the [built-in config](https://github.com/aws/aws-for-fluent-bit/blob/mainline/configs/plugin-and-storage-metrics-to-cloudwatch.conf) includes a `[SERVICE]` section. This section can only be set once, so importing the built-in means that you can not have your own custom `[SERVICE]` section..
 
 #### 3. Create a metric filter for the storage metrics
 
@@ -196,4 +216,4 @@ D. Metric Value: `$.storage_layer.chunks.mem_chunks`
 
 E. Unit: Count
 
-F. Dimensions: Same as the first tutorial, you must choose this yourself, we recommend choosing uncommenting the lines in `extra.conf` to add HOSTNAME to the metric data and choosing this as a dimension. This can be accomplished by setting the dimension to `hostname:$hostname`. 
+F. Dimensions: Same as the first tutorial, you must choose this yourself, we recommend choosing uncommenting the lines in [`extra.conf`](extra.conf) to add HOSTNAME to the metric data and choosing this as a dimension. This can be accomplished by setting the dimension to `hostname:$hostname`. 
