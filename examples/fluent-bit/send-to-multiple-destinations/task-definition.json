@@ -23,6 +23,16 @@
 					"awslogs-stream-prefix": "firelens"
 				}
 			},
+			"environment": [
+				{
+				    "name": "ENVIRONMENT",
+				    "value": "test"
+				},
+				{
+				    "name": "APP_NAME",
+				    "value": "app"
+				}
+		],
 			"memoryReservation": 50
 		},
 		{
