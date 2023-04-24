@@ -35,6 +35,10 @@
 				{
 				    "name": "ECS_CLUSTER",
 				    "value": "app-cluster"
+				},
+				{
+				    "name": "AWS_REGION",
+				    "value": "us-west-2"
 				}
 		],
 			"memoryReservation": 50
