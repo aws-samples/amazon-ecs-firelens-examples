@@ -31,6 +31,10 @@
 				{
 				    "name": "APP_NAME",
 				    "value": "app"
+				},
+				{
+				    "name": "ECS_CLUSTER",
+				    "value": "app-cluster"
 				}
 		],
 			"memoryReservation": 50
