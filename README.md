@@ -52,6 +52,7 @@ An [init tag](https://github.com/aws/aws-for-fluent-bit#using-the-init-tag) is d
 * [Send to multiple destinations](examples/fluent-bit/send-to-multiple-destinations)
 * [Add custom metadata to logs](examples/fluent-bit/add-keys)
 * [Datadog monitoring](examples/fluent-bit/datadog)
+* [Dynatrace monitoring](examples/fluent-bit/dynatrace)
 * [SignalFx monitoring](examples/fluent-bit/signalfx)
 * [New Relic Logs](examples/fluent-bit/newrelic)
 * [Sumo Logic](examples/fluent-bit/sumologic)
