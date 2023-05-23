@@ -193,6 +193,20 @@ A couple of key notes:
 
 When the `storage.total_limit_size` is reached, the oldest chunks will be deleted first to make room for new chunks. *Older buffered logs will be lost in favor of making room for newer logs.*
 
+In AWS for Fluent Bit [2.31.9](https://github.com/aws/aws-for-fluent-bit/releases/tag/v2.31.9) there is an info level message logged when this limit is reached and chunks will be removed:
+
+```
+[info] [input chunk] remove chunk 1-1678829080.465983679.flb with size 2000000 bytes from input plugin forward.1 to output plugin cloudwatch_logs.0 to place the incoming data with size 1000000 bytes, total_limit_size=200000000
+```
+
+Also, there is an error message when new chunks can not be ingested at all due to the limit. If you set a limit that is not very small this should not happen in practice as Fluent Bit should always be able to delete older chunks to ingest new data.
+
+```
+[error] [input chunk] no available chunk
+[error] [input chunk] chunk 1-1678829080.465983679.flb would exceed total limit size in plugin cloudwatch_logs.0
+```
+
+
 ## 3. Monitor Fluent Bit
 
 You can monitoring Fluent Bit's plugin metrics to track the number of retries and also track the storage usage. 
