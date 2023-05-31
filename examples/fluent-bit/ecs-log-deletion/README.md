@@ -51,6 +51,12 @@ Make sure you are familiar with the [Fluent Bit documentation](https://docs.flue
 
 ### 1. Use Fluent Bit Exec Input to run deletion command
 
+##### Warning: exec input issue in AWS for Fluent Bit <= 2.31.11
+
+There is a [known issue](https://github.com/aws/aws-for-fluent-bit/issues/661#issuecomment-1569515241) in the exec input in AWS for Fluent Bit <= 2.31.11 which can cause it to crash, generally shortly after startup. 
+
+This issue is resolved in [2.31.12](https://github.com/aws/aws-for-fluent-bit/releases).
+
 ##### Prerequisites:
 * The volume mount for Fluent Bit must not be read-only
 * Familiar with [exec input](https://docs.fluentbit.io/manual/pipeline/inputs/exec) of Fluent Bit
