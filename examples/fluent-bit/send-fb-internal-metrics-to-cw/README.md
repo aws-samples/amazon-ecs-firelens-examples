@@ -2,6 +2,12 @@
 
 This example shows you how to monitor Fluent Bit, by having it upload its own metrics to CloudWatch. 
 
+##### Warning: exec input issue in AWS for Fluent Bit <= 2.31.11
+
+There is a [known issue](https://github.com/aws/aws-for-fluent-bit/issues/661#issuecomment-1569515241) in the exec input in AWS for Fluent Bit <= 2.31.11 which can occasionally cause it to crash, generally immediately after startup.   
+
+This issue is resolved in [2.31.12](https://github.com/aws/aws-for-fluent-bit/releases).
+
 ### How it works
 
 Fluent Bit scrapes its own [prometheus endpoint](https://docs.fluentbit.io/manual/administration/monitoring) and then parses the logs to a JSON that looks like this after FireLens adds ECS Metadata:
