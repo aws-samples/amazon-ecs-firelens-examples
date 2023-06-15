@@ -39,6 +39,8 @@ If retries for a chunk have expired and it will be dropped, then you will see me
 
 ### Case 1: Memory Buffering Only: default or "storage.type memory"
 
+*Full example config file:* [**memory.conf**](memory.conf)
+
 **Note:** This guidance applies if you have chosen the default `memory` buffer type for `storage.type`. If you choose `filesystem` then skip to the next section which covers filesystem buffering.
 
 To prevent high memory usage, Fluent Bit has [a setting called `Mem_Buf_Limit`](https://docs.fluentbit.io/manual/administration/backpressure) which can be set on each input definition. 
@@ -92,6 +94,8 @@ Here is a full configuration example with only memory buffering:
 ```
 
 ### Case 2: Filesystem and Memory Buffering: "storage.type filesystem"
+
+*Full example config file:* [**filesystem.conf**](filesystem.conf)
 
 You can also tell the input to buffer on the filesystem. *If you choose `storage.type filesystem` then the `Mem_Buf_Limit` parameter explained in the previous section no longer limits memory. Instead, as explained below, use `storage.max_chunks_up`*.
 
