@@ -1,0 +1,37 @@
+{
+	"family": "firelens-example-cloudwatch_logs",
+	"taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+	"executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+	"containerDefinitions": [
+		{
+			"essential": true,
+			"image": "XXXXXXXXXXXX.dkr.ecr.us-east-1.amazonaws.com/customized-flb-with-entrypoint-overridden:latest",
+			"name": "log_router",
+			"firelensConfiguration": {
+				"type": "fluentbit",
+				"options":{
+					"enable-ecs-log-metadata":"false"
+				}
+			},
+			"logConfiguration": {
+				"logDriver": "awslogs",
+				"options": {
+					"awslogs-group": "firelens-container",
+					"awslogs-region": "us-west-2",
+					"awslogs-create-group": "true",
+					"awslogs-stream-prefix": "firelens"
+				}
+			},
+			"memoryReservation": 50
+		},
+		{
+			"essential": true,
+			"image": "nginx",
+			"name": "app",
+			"logConfiguration": {
+				"logDriver":"awsfirelens"
+			},
+			"memoryReservation": 100
+		}
+	]
+}
