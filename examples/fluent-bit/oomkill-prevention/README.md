@@ -223,8 +223,24 @@ Please note, this technique ignores & overrides the FireLens generated configura
 * All configuration must be present in your custom config file; the `logConfiguration` options map should be empty as its content goes to the FireLens generated configuration.
 * The `enable-ecs-log-metadata` firelens setting (default true) should be set to `false` because the metadata goes to the FireLens generated configuration file. Your logs will not have metadata attached: [What will the logs collected by FireLens look like?](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#what-will-the-logs-collected-by-fluent-bit-look-like). To add metadata to logs, consider using the [init tag with ECS metadata support in env vars](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/init-metadata).
 
-Please review the full configuration examples carefully. The following is of note:
-* The FireLens configuration object does not specify a config file to import:
+Please review the full configuration examples carefully. To understand the technique used, please review [How to set Fluentd and Fluent Bit input parameters in FireLens](https://aws.amazon.com/blogs/containers/how-to-set-fluentd-and-fluent-bit-input-parameters-in-firelens/).
+
+The following settings are of note and are **required** for these examples to work properly:
+* The Dockerfile for Fluent Bit adds our custom config file and overrides the entrypoint to use it directly. This means we will not use the FireLens generated config file placed at `/fluent-bit/etc/fluent-bit.conf`.
+```
+FROM public.ecr.aws/aws-observability/aws-for-fluent-bit:stable
+ADD extra.conf /fluent-bit/alt/fluent-bit.conf
+CMD echo -n "AWS for Fluent Bit Container Image Version " && \
+    cat /AWS_FOR_FLUENT_BIT_VERSION && echo "" && \
+    exec /fluent-bit/bin/fluent-bit -e /fluent-bit/firehose.so -e /fluent-bit/cloudwatch.so -e /fluent-bit/kinesis.so -c /fluent-bit/alt/fluent-bit.conf
+```
+* The app container specifies `awsfirelens` with no options. FireLens uses the options to generate an output definition that goes in the generated config file at `/fluent-bit/etc/fluent-bit.conf`. Since we ignore that file, we do not set any options; please place all output configurations in your `/fluent-bit/alt/fluent-bit.conf` file. Simply specifying the `awsfirelens` log driver tells ECS to configure the container to send logs to the Fluentd log driver and send them to Fluent Bit over the `/var/run/fluent.sock` unix socket that we specified in our `/fluent-bit/alt/fluent-bit.conf` file. See our debugging guide for information on the [FireLens tag pattern used for container logs](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#firelens-tag-and-match-pattern-and-generated-config). 
+```
+"logConfiguration": {
+	"logDriver":"awsfirelens"
+}
+```
+* The FireLens configuration object does not specify a config file to import. This is necessary because any config file specified would be imported (using an `@INCLUDE` statement) into the FireLens generated config file, which we ignore/override. Additionally, we explicitly set `"enable-ecs-log-metadata":"false"` since the metadata `record_modifier` filter would be added to generated config file, which we ignore/override. 
 ```
 "firelensConfiguration": {
 	"type": "fluentbit",
@@ -232,20 +248,6 @@ Please review the full configuration examples carefully. The following is of not
 		"enable-ecs-log-metadata":"false"
 	}
 }
-```
-* The app container specifies `awsfirelens` with no options:
-```
-"logConfiguration": {
-	"logDriver":"awsfirelens"
-}
-```
-* The Dockerfile for Fluent Bit adds our custom config file and overrides the entrypoint to use it:
-```
-FROM public.ecr.aws/aws-observability/aws-for-fluent-bit:stable
-ADD extra.conf /fluent-bit/alt/fluent-bit.conf
-CMD echo -n "AWS for Fluent Bit Container Image Version " && \
-    cat /AWS_FOR_FLUENT_BIT_VERSION && echo "" && \
-    exec /fluent-bit/bin/fluent-bit -e /fluent-bit/firehose.so -e /fluent-bit/cloudwatch.so -e /fluent-bit/kinesis.so -c /fluent-bit/alt/fluent-bit.conf
 ```
 * The custom Fluent Bit image must be built and used in the task definition:
 ```
