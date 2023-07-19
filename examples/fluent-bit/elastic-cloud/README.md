@@ -17,7 +17,8 @@ This is optional; it is also valid to simply specify the Cloud_Auth in options m
         "Index": "elastic_firelens",
         "tls": "On",
         "tls.verify": "Off",
-        "retry_limit": "2"
+        "retry_limit": "2",
+        "Suppress_Type_Name": "On"
     }
 },
 ```
@@ -36,7 +37,8 @@ This is optional; you can also use regular Elasticsearch credentials to connect 
         "Index": "elastic_firelens",
         "tls": "On",
         "tls.verify": "Off",
-        "retry_limit": "2"
+        "retry_limit": "2",
+        "Suppress_Type_Name": "On"
     }
 },
 ```
