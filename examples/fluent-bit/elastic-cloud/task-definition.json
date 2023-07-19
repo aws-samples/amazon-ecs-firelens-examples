@@ -51,7 +51,8 @@
             "Index": "elastic_firelens",
             "tls": "On",
             "tls.verify": "Off",
-            "retry_limit": "2"
+            "retry_limit": "2",
+            "Suppress_Type_Name": "On"
           }
         },
         "memoryReservation": 100
