@@ -107,7 +107,7 @@ Here is an example inline policy with S3 access for FireLens:
 }
 ```
 
-### Using the Examples
+### Using the examples
 
 You must update each Task Definition to reflect your own needs. Replace the IAM roles with your own roles. Update the log configuration with the values that you desire. And replace the app image with your own application image.
 
