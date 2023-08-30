@@ -1,0 +1,40 @@
+{
+    "family": "firelens-example-grafana-loki",
+    "taskRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_iam_role",
+    "executionRoleArn": "arn:aws:iam::XXXXXXXXXXXX:role/ecs_task_execution_role",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "amazon/aws-for-fluent-bit:stable",
+            "name": "log_router",
+            "firelensConfiguration":{
+                "type":"fluentbit",
+                "options":{
+                    "enable-ecs-log-metadata":"true"
+                }
+            },
+            "memoryReservation": 50
+         },
+         {
+             "essential": true,
+             "image": "httpd",
+             "name": "app",
+             "logConfiguration": {
+                "logDriver":"awsfirelens",
+                "options": {
+                    "Name": "grafana-loki",
+                    "Url": "https://<userid>:<apikey>@logs-prod-us-west2.grafana.net/loki/api/v1/push",
+                    "Labels": "{job=\"firelens\"}",
+                    "RemoveKeys": "container_id,ecs_task_arn",
+                    "LabelKeys": "container_name,ecs_task_definition,source,ecs_cluster",
+                    "LineFormat": "key_value"
+                },
+                "secretOptions": [{
+                    "name": "apikey",
+                    "valueFrom": "arn:${Partition}:secretsmanager:${Region}:${Account}:secret:${SecretId}"
+                }]
+            },
+            "memoryReservation": 100
+        }
+    ]
+}
