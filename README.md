@@ -60,6 +60,7 @@ An [init tag](https://github.com/aws/aws-for-fluent-bit#using-the-init-tag) is d
 * [Sematext Logs](examples/fluent-bit/sematext)
 * [Logstash](examples/fluent-bit/logstash)
 * [Elastic Cloud](examples/fluent-bit/elastic-cloud)
+* [Grafana Loki monitoring](examples/fluent-bit/grafana-loki)
 
 ### Fluentd Examples
 
