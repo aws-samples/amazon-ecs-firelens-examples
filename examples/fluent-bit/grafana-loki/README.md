@@ -10,15 +10,15 @@ AWS recommends that you store sensitive information, like your Datadog API Key u
 
 ```
 "logConfiguration": {
-	"logDriver":"awsfirelens",
-	"options": {
-	   "Name": "loki",
-	   "Host": "logs-prod-us-west2.grafana.net",
-	   "port": "443",
-	   "tls": "on",
-	   "tls.verify": "on",
-	   "http_user": "user_id",
-	   "http_passwd": "<Http Password>"
+ "logDriver":"awsfirelens",
+ "options": {
+    "Name": "loki",
+    "Host": "logs-prod-us-west2.grafana.net",
+    "port": "443",
+    "tls": "on",
+    "tls.verify": "on",
+    "http_user": "user_id",
+    "http_passwd": "<Http Password>"
    }
 },
 ```
