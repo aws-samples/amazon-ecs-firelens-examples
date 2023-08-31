@@ -22,17 +22,14 @@
              "logConfiguration": {
                 "logDriver":"awsfirelens",
                 "options": {
-                    "Name": "grafana-loki",
-                    "Url": "https://<userid>@logs-prod-us-west2.grafana.net/loki/api/v1/push",
-                    "Labels": "{job=\"firelens\"}",
-                    "RemoveKeys": "container_id,ecs_task_arn",
-                    "LabelKeys": "container_name,ecs_task_definition,source,ecs_cluster",
-                    "LineFormat": "key_value"
-                },
-                "secretOptions": [{
-                    "name": "apikey",
-                    "valueFrom": "arn:${Partition}:secretsmanager:${Region}:${Account}:secret:${SecretId}"
-                }]
+                    "Name": "loki",
+                    "Host": "logs-prod-us-west2.grafana.net",
+                    "port": "443",
+                    "tls": "on",
+                    "tls.verify": "on",
+                    "http_user": "user_id",
+                    "http_passwd": "password"
+                }
             },
             "memoryReservation": 100
         }
