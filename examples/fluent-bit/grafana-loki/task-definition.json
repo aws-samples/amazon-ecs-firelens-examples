@@ -27,9 +27,12 @@
                     "port": "443",
                     "tls": "on",
                     "tls.verify": "on",
-                    "http_user": "user_id",
-                    "http_passwd": "password"
-                }
+                    "http_user": "user_id"
+                },
+                "secretOptions": [{
+                    "name": "http_passwd",
+                    "valueFrom": "arn:${Partition}:secretsmanager:${Region}:${Account}:secret:${SecretId}"
+                }]
             },
             "memoryReservation": 100
         }
