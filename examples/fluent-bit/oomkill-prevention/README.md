@@ -8,6 +8,9 @@ The following are actions that we recommend considering.
 
 1. [Retry_Limit](#1-retry_limit)
 2. [Control Fluent Bit buffer memory](#2-control-fluent-bit-buffer-memory)
+    - [Background and Recommendations](#background-and-recommendations)
+        - [When should I use memory or filesystem buffer?](#when-should-i-use-memory-or-filesystem-buffer)
+        - [What is a 'chunk'?](#what-is-a-chunk)
     - [Case 1: Memory Buffering Only: default or "storage.type memory"](#case-1-memory-buffering-only-default-or-storagetype-memory)
         - [Estimating Total Memory Usage of the Fluent Bit Process](#storagetype-memory-estimating-total-memory-usage-of-the-fluent-bit-process)
         - [What happens when the memory limit is reached?](#storagetype-memory-what-happens-when-the-memory-limit-is-reached)
@@ -37,6 +40,35 @@ If retries for a chunk have expired and it will be dropped, then you will see me
 ```
 
 ## 2. Control Fluent Bit buffer memory
+
+### Background and Recommendations
+
+#### When should I use memory or filesystem buffer?
+
+The default buffer type is `memory`; `filesystem` buffering can optionally be enabled. Please read this full guide to understand both buffer types and how to tune their behavior. 
+
+In general, AWS Fluent Bit team recommends configuring `filesystem` buffering for the following reasons. Please carefully consider these benefits, as they depend on your exact use case.
+* **Larger buffer space**: If you have more free disk space available than free memory space (or if disk is cheaper than memory), then choosing filesystem buffering enables a larger buffer. During a spike in throughput or a momentary failure in the logging destination, Fluent Bit will be able to buffer logs longer and the risk of log loss will be reduced.
+* **Buffer can be recovered after restart**: With a filesystem buffer, if Fluent Bit stops and restarts, it can pick up the existing buffer files on the filesystem. This consideration only matters if Fluent Bit will be restarted with the same disk and volume mounts; consider whether your use case involves restarting Fluent Bit with access to the same files. In Kubernetes/EKS, this is very common as Fluent Bit is typically runs as a daemonset. 
+* **Total Fluent Bit memory usage can be more restricted**: With the filesystem buffer, Fluent Bit can be configured to use less memory than if the memory buffer is configured. Please note that the filesystem buffer does still use memory for buffering as well and the `storage.max_chunks_up` setting must be carefully chosen; read [storage.type filesystem: What happens when the memory limit is reached?](#storagetype-filesystem-what-happens-when-the-memory-limit-is-reached) 
+* **Inputs do not need to be paused**: By default, when the memory buffer is configured and the limit is reached, the input plugin is paused. An [overlimit warning](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#overlimit-warnings) will be logged and [all input plugins will lose data](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#overlimit-warnings), except for [tail](https://docs.fluentbit.io/manual/pipeline/inputs/tail), which can save its file offset before it is paused. With filesystem buffering, by default the inputs will not be paused when limits are reached. They can keep ingesting new data. Please carefully read:
+    * [storage.type memory: What happens when the memory limit is reached?](#storagetype-memory-what-happens-when-the-memory-limit-is-reached)
+    * [storage.type filesystem: What happens when the memory limit is reached?](#storagetype-filesystem-what-happens-when-the-memory-limit-is-reached)
+    * [What happens when the disk limit is reached?](#what-happens-when-the-disk-limit-is-reached)
+
+There are cases where the default `memory` buffer is preferable:
+* **Using tail input**: With the tail input, logs are already ingested from the filesystem. Storing the logs on disk twice, once in the original files and once in the Fluent Bit buffer, may not make sense and simply duplicates disk space usage. The tail input will store its file byte offset for each file to track its progress; with the `DB` option the offset is persisted in a local SQLite DB file. With `DB.locking false`, the SQLite DB can be read by other processes.
+* **Limited available disk space**: If your available disk space is limited, then using filesystem buffering may not be ideal.
+* **Limited disk IOPs**: If many other processes are reading and writing to the disk, then disk IOPs may be saturated. This is a [known issue](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#filesystem-buffering-and-log-files-saturate-node-disk-iops) that prevents some users from enabling filesystem buffering. 
+
+Finally, it should also be noted that enabled filesystem buffering adds a slight performance hit compared to memory buffering, since Fluent Bit makes disk IO calls. However, the difference in performance is generally trivial (but has never been benchmarked) and AWS for Fluent Bit team has never witnessed a customer case where the difference in performance was significant enough to matter.
+
+#### What is a 'chunk'?
+
+Throughput this guide, and the Fluent Bit documentation, there are many uses of the word 'chunk'. This term is overloaded; internally in Fluent Bit there are multiple possible meanings for 'chunk'.
+
+* **internal buffer chunk**: When Fluent Bit ingests data, it stores it temporarily (after applying filters) before sending data to the outputs. This is the meaning of 'chunk' used throughput this guide on buffering. These internal buffer chunks are managed by the Fluent Bit engine; it accepts data from inputs, and appends it to chunks. Each chunk is targeted to be 2MB in size; *this size is not configurable*. *The 2MB size does not restrict Fluent Bit from ingesting logs larger than 2 MB*; the target size can be exceeded to store a single large log. For each unique tag value for each of the inputs that are actively ingesting data, there should be at least one active chunk to collect the data for each tag. When the Fluent Bit engine invokes an output plugin to send data, it sends single chunks at a time. There are only a few configuration options that affect internal buffer chunks. The settings discussed in this guide explain how to control where chunks are stored (memory vs filesystem) and the behavior of Fluent Bit when limits are reached. The [`Flush` parameter](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/configuration-file) controls the frequency at which Fluent Bit attempts to send buffer chunks. 
+* **chunks in plugins**: In plugin documentation and examples, the word 'chunk' is used more generally to mean a unit of data. These usages of chunk are all different than the internal buffer chunks discussed above. Plugins do not have any control over internal buffer chunks. For example, the [S3 output documentation](https://docs.fluentbit.io/manual/pipeline/outputs/s3) uses the word 'chunk' to refer to a single part in a multipart upload with the `upload_chunk_size` parameter. The TCP input uses the word ['chunk' in a setting](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#chunk_size-and-buffer_size-for-large-logs-in-tcp-input) that controls memory allocation. 
 
 ### Case 1: Memory Buffering Only: default or "storage.type memory"
 
@@ -70,13 +102,13 @@ Thus, if you give Fluent Bit a 200 MB memory limit in your container definition,
 
 #### storage.type memory: What happens when the memory limit is reached?
 
-Of course, there are downsides to `Mem_Buf_Limit`. If an input runs out of memory buffer, it stop ingesting logs and emit messages like the following:
+Of course, there are downsides to `Mem_Buf_Limit`. If an input runs out of memory buffer, it stop ingesting logs and [emit messages](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#overlimit-warnings) like the following:
 
 ```
 [input] forward.1 paused (mem buf overlimit)
 ```
 
-This means you will lose logs. *New logs will not be ingested, older logs in the buffer will remain.* And other components may experience errors, for example, if you use the [log4j TCP appender to write logs to Fluent Bit](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/ecs-log-collection), log4j will experience a connection failure. 
+[All input plugins will lose data](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#overlimit-warnings), except for [tail](https://docs.fluentbit.io/manual/pipeline/inputs/tail), which can save its file offset before it is paused. *New logs will not be ingested, older logs in the buffer will remain.* And other components may experience errors, for example, if you use the [log4j TCP appender to write logs to Fluent Bit](https://github.com/aws-samples/amazon-ecs-firelens-examples/tree/mainline/examples/fluent-bit/ecs-log-collection), log4j will experience a [connection failure](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#log4j-tcp-appender-write-failure). 
 
 Unfortunately, in FireLens, the [log inputs for stdout/stderr error logs from your application container(s) is auto-generated by ECS](https://aws.amazon.com/blogs/containers/under-the-hood-firelens-for-amazon-ecs-tasks/), and has no `Mem_Buf_Limit` set. Thus, you must use the workaround in this blog to set it: [How to set Fluentd and Fluent Bit input parameters in FireLens](https://aws.amazon.com/blogs/containers/how-to-set-fluentd-and-fluent-bit-input-parameters-in-firelens/). See [Full FireLens Configuration Examples](#full-firelens-configuration-examples) for an example that includes setting limits and overriding the stdout/stderr input generated by FireLens.
 
@@ -87,7 +119,6 @@ Here is a full configuration example with only memory buffering:
     Name                              tcp
     Listen                            0.0.0.0
     Port                              5170
-    Chunk_Size                        32
     Buffer_Size                       64
     Format                            none
     Tag                               tcp-logs
@@ -160,7 +191,6 @@ Here is a full configuration example with disk buffering:
     Name                              tcp
     Listen                            0.0.0.0
     Port                              5170
-    Chunk_Size                        32
     Buffer_Size                       64
     Format                            none
     Tag                               tcp-logs
