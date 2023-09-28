@@ -7,11 +7,15 @@ There are two Fluent Bit output plugins for sending to Amazon CloudWatch Logs:
 * Plugin name `cloudwatch_logs`: the newer and higher performance cloudwatch plugin built in C in the Fluent Bit upstream code base. It has more limited log group and stream name templating support. See its [documentation](https://docs.fluentbit.io/manual/pipeline/outputs/cloudwatch). This directory contains an example task definition for the high performance plugin without templating. The log stream name will be set to be `{log_stream_prefix}{log tag}` and [FireLens sets the log tag](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#firelens-tag-and-match-pattern-and-generated-config) to be `{container name in task definition}-firelens-{task ID}`. So the log stream name for this example will be `stdout-stderr-app-firelens-{task ID}`. 
 
 
-For more on the AWS Go outputs vs AWS C outputs, check out the [FAQ entry in our debugging guide](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#aws-go-plugins-vs-aws-core-c-plugins). 
+For more on the AWS Go outputs vs AWS C outputs, check out the [FAQ entry in our debugging guide](https://github.com/aws/aws-for-fluent-bit/blob/mainline/troubleshooting/debugging.md#aws-go-plugins-vs-aws-core-c-plugins).
 
 #### Recommended cloudwatch_logs configuration options
 
 To minimize the possibility of log loss when sending to CloudWatch, consider using the recommended configuration outlined in the [CloudWatch Recommendations](https://github.com/aws/aws-for-fluent-bit/issues/340) issue.
+
+#### High throughput logging to CloudWatch Logs via multiple workers
+
+As of AWS For Fluent Bit `2.32.0`, the `cloudwatch_out` plugin supports high througpht logging via multiple workers. Set the `workers` option to a high value such as `5`. Fluent Bit will spin up the specified number of workers as threads which will take advantage of concurrency. For best performance, the number of workers should be at least the number of cores on the host. AWS For Fluent Bit `2.31.12` and prior does not support multiple workers and should should only use `0` and `1` workers.
 
 ### What if I just want the raw log line from the container to appear in CloudWatch?
 
