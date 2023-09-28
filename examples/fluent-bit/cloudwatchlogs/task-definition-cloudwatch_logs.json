@@ -33,7 +33,8 @@
 					"log_group_name": "/aws/ecs/containerinsights/application",
 					"auto_create_group": "true",
 					"log_stream_name": "stdout-stderr-",
-					"retry_limit": "2"
+					"retry_limit": "2",
+					"workers": "1"
 				}
 			},
 			"memoryReservation": 100
