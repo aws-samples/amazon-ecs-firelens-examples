@@ -44,6 +44,7 @@ An [init tag](https://github.com/aws/aws-for-fluent-bit#using-the-init-tag) is d
 * [Send to S3](examples/fluent-bit/s3)
 * [Send to Amazon OpenSearch Service](examples/fluent-bit/amazon-opensearch)
 * [Send to Amazon OpenSearch Serverless Service](examples/fluent-bit/amazon-opensearch-serverless)
+* [Send to Amazon Managed Service for Prometheus](examples/fluent-bit/amazon-managed-service-for-prometheus)
 * [Enable Debug Logging](examples/fluent-bit/enable-debug-logging)
 * [Forward to a Fluentd or Fluent Bit Log Aggregator](examples/fluent-bit/forward-to-aggregator)
 * [Parse Serialized JSON](examples/fluent-bit/parse-json)

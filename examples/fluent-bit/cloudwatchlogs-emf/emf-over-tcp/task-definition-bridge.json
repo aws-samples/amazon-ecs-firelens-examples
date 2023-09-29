@@ -45,7 +45,8 @@
 					"log_group_name": "stdout-stderr-log-group/application",
 					"auto_create_group": "true",
 					"log_stream_prefix": "app-",
-					"retry_limit": "2"
+					"retry_limit": "2",
+					"workers": "1"
 				}
 			},
 			"memoryReservation": 100
