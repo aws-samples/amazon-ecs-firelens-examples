@@ -15,7 +15,7 @@ To minimize the possibility of log loss when sending to CloudWatch, consider usi
 
 #### High throughput logging to CloudWatch Logs via multiple workers
 
-As of AWS For Fluent Bit `2.32.0`, the `cloudwatch_out` plugin supports high througpht logging via multiple workers. Set the `workers` option to a high value such as `5`. Fluent Bit will spin up the specified number of workers as threads which will take advantage of concurrency. For best performance, the number of workers should be at least the number of cores on the host. AWS For Fluent Bit `2.31.12` and prior does not support multiple workers and should should only use `0` and `1` workers.
+As of AWS For Fluent Bit `2.32.0`, the `cloudwatch_logs` plugin supports high throughput logging via multiple workers. Set the `workers` option to an integer value, such as `5`, indicating the number of worker threads dedicated to processing output data to CloudWatch Logs concurrently. To optimize for high throughput logging, consider setting the number of workers the number of cores on the host. AWS For Fluent Bit `2.31.12` and prior does not support multiple workers, and `workers` should be set to `1`.
 
 ### What if I just want the raw log line from the container to appear in CloudWatch?
 
