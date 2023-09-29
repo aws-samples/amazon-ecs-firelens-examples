@@ -1,0 +1,37 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowRemoteWritePrometheus",
+            "Effect": "Allow",
+            "Action": [
+                "aps:RemoteWrite"
+            ],
+            "Resource": "arn:aws:aps:<region>:<account>:workspace/ws-<amazon-prometheus-ws-id>"
+        },
+        {
+            "Sid": "AllowAccessInitTaskConfig",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": [
+                "arn:aws:s3:::your-bucket",
+                "arn:aws:s3:::your-bucket/*"
+            ]
+        },
+        {
+            "Sid": "AllowWriteCloudWatchLogs",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:PutLogEvents",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
