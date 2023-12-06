@@ -2,7 +2,14 @@
 
 The `log-driver-buffer-limit` option is now supported on ECS EC2 and ECS Fargate with PV1.4+. This setting tells FireLens to configure the Fluentd Docker Log Driver field [fluentd-buffer-limit](https://docs.docker.com/config/containers/logging/fluentd/#fluentd-buffer-limit). This setting applies to the log driver that FireLens uses [under the hood](https://aws.amazon.com/blogs/containers/under-the-hood-firelens-for-amazon-ecs-tasks/) to capture stdout & stderr container logs and send them to Fluentd or Fluent Bit.
 
-As we know, FireLens is a container log router for Amazon ECS and AWS Fargate that gives customers extensibility to use the breadth of services at AWS or partner solutions for log analytics and storage. FireLens works with Fluentd and Fluent Bit and makes it easy to use these two popular open source logging projects.
+If the Fluentd buffer limit is insufficient, log loss can occur. The Fluentd log driver in the container runtime will emit the following [error message](https://github.com/fluent/fluent-logger-golang/blob/v1.9.0/fluent/fluent.go#L422) when logs are lost:
+```
+fluent#appendBuffer: Buffer full
+```
+
+On EC2, the Docker container runtime logs can be collected from the system journal with `sudo journalctl -fu docker.service`. On Fargate, container runtime logs are not available to customers. The buffer limit setting controls the [maximum size of the pending log record buffer](https://github.com/fluent/fluent-logger-golang/blob/v1.9.0/fluent/fluent.go#L181) in the log driver; configure a large enough size to ensure there is no log loss for your workload. 
+
+FireLens is a container log router for Amazon ECS and AWS Fargate that gives customers extensibility to use the breadth of services at AWS or partner solutions for log analytics and storage. FireLens works with Fluentd and Fluent Bit and makes it easy to use these two popular open source logging projects.
 
 ![FireLens](https://d2908q01vomqb2.cloudfront.net/fe2ef495a1152561572949784c16bf23abb28057/2019/11/16/Screen-Shot-2019-09-26-at-5.21.35-PM-1024x572.png)
 
