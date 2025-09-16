@@ -15,7 +15,7 @@
 				"type": "fluentd",
 				"options": {
 					"config-file-type": "s3",
-					"config-file-value": "arn:aws:s3:::firelens-config-bucket/rewrite-tag.conf"
+					"config-file-value": "arn:aws:s3:::amzn-s3-demo-CHANGE-ME-TO-YOUR-BUCKET/rewrite-tag.conf"
 				}
 			},
 			"logConfiguration": {
