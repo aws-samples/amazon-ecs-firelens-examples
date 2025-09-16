@@ -15,7 +15,7 @@ AWS recommends that you store sensitive information, like your Dynatrace API Tok
 	   "Format": "json",
 	   "Json_Date_Format": "iso8601",
 	   "Json_Date_Key": "timestamp",
-	   "Header: "Content-Type application/json; charset=utf-8",
+	   "Header": "Content-Type application/json; charset=utf-8",
 	   "Port": "443",
 	   "URI": "/api/v2/logs/ingest?api-token={your-API-Token-here}",
 	   "Allow_Duplicated_Headers": "false",
