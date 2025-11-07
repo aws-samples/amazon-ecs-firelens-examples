@@ -19,7 +19,9 @@ RUN CGO_ENABLED=0 go build \
 
 FROM public.ecr.aws/docker/library/alpine:3.22
 
-RUN apk add --no-cache curl
+RUN apk add --no-cache curl jq sqlite
+
+RUN echo -e ".headers on\n.mode column\n.width 5 32 12 12 10" > ~/.sqliterc
 
 COPY --from=builder /app/log-generator /log-generator
 

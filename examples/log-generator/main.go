@@ -35,6 +35,7 @@ var (
 type Config struct {
 	Rate                 float64
 	SizeKB               int
+	ExtraSizeKB          int
 	BurstSizeKB          int
 	BurstIntervalSeconds int
 	Output               string
@@ -50,13 +51,19 @@ func main() {
 		panic(err)
 	}
 
-	payloadSize := max((config.SizeKB*1024)-overhead, minPayload)
+	// Calculate max possible payload size for buffer allocation
+	maxSizeKB := config.SizeKB + config.ExtraSizeKB
+	payloadSize := max((maxSizeKB*1024)-overhead, minPayload)
 	burstPayloadSize := max((config.BurstSizeKB*1024)-overhead, minPayload)
 
 	burstInterval := time.Second * time.Duration(config.BurstIntervalSeconds)
 	fmt.Printf("Starting SajaMediaGroup Analytics Log Generator...\n")
 	fmt.Printf("Rate: %.1f logs/second\n", config.Rate)
-	fmt.Printf("Size: ~%dKB per log\n", config.SizeKB)
+	if config.ExtraSizeKB > 0 {
+		fmt.Printf("Size: %d-%dKB per log (variable)\n", config.SizeKB, config.SizeKB+config.ExtraSizeKB)
+	} else {
+		fmt.Printf("Size: ~%dKB per log\n", config.SizeKB)
+	}
 	fmt.Printf("Burst Size: ~%dKB per log (burst every %s)\n", config.BurstSizeKB, burstInterval.String())
 	fmt.Printf("Output File: %s\n", config.Output)
 
@@ -88,6 +95,7 @@ func main() {
 			burstBuf:    make([]byte, burstPayloadSize),
 			ticker:      ticker,
 			burstTicker: burstTicker,
+			config:      config,
 		}
 		go w.run()
 	}
@@ -98,6 +106,7 @@ func main() {
 		burstBuf:    make([]byte, burstPayloadSize),
 		ticker:      ticker,
 		burstTicker: burstTicker,
+		config:      config,
 	}
 	w.run()
 }
@@ -120,6 +129,11 @@ func parseConfig() (*Config, error) {
 		return nil, err
 	}
 
+	extraSizeKB, err := strconv.Atoi(getEnv("LOG_SIZE_EXTRA_KB", "0"))
+	if err != nil {
+		return nil, err
+	}
+
 	burstSizeKB := sizeKB
 	if v := os.Getenv("LOG_SIZE_BURST_KB"); v != "" {
 		burstSizeKB, err = strconv.Atoi(v)
@@ -133,7 +147,7 @@ func parseConfig() (*Config, error) {
 		return nil, err
 	}
 
-	rotateMaxSize, err := strconv.Atoi(getEnv("LOG_ROTATE_MAX_SIZE", "100"))
+	rotateMaxSize, err := strconv.Atoi(getEnv("LOG_ROTATE_MAX_SIZE_MB", "100"))
 	if err != nil {
 		return nil, err
 	}
@@ -152,6 +166,7 @@ func parseConfig() (*Config, error) {
 	return &Config{
 		Rate:                 rate,
 		SizeKB:               sizeKB,
+		ExtraSizeKB:          extraSizeKB,
 		BurstSizeKB:          burstSizeKB,
 		BurstIntervalSeconds: burstIntervalSeconds,
 		Output:               output,
@@ -162,7 +177,7 @@ func parseConfig() (*Config, error) {
 }
 
 func randomString(rng *rand.Rand, buf []byte) []byte {
-	for i := 0; i < cap(buf); i++ {
+	for i := 0; i < len(buf); i++ {
 		buf[i] = charset[rng.Intn(charsetLen)]
 	}
 	return buf
@@ -175,20 +190,33 @@ type worker struct {
 	burstBuf    []byte
 	ticker      *time.Ticker
 	burstTicker *time.Ticker
+	config      *Config
 }
 
 func (w *worker) run() {
 	for range w.ticker.C {
 		select {
 		case <-w.burstTicker.C:
-			genAndWriteLogEntry(w.encoder, w.rng, w.burstBuf)
+			genAndWriteLogEntry(w.encoder, w.rng, w.burstBuf, w.config.BurstSizeKB, 0)
 		default:
-			genAndWriteLogEntry(w.encoder, w.rng, w.buf)
+			genAndWriteLogEntry(w.encoder, w.rng, w.buf, w.config.SizeKB, w.config.ExtraSizeKB)
 		}
 	}
 }
 
-func genAndWriteLogEntry(encoder *json.Encoder, rng *rand.Rand, payloadBuf []byte) {
+func genAndWriteLogEntry(encoder *json.Encoder, rng *rand.Rand, payloadBuf []byte, baseSizeKB, extraSizeKB int) {
+	// Calculate actual payload size with extra random size
+	actualSizeKB := baseSizeKB
+	if extraSizeKB > 0 {
+		// Apply random extra size: baseSizeKB + (0 to extraSizeKB)
+		extraSize := rng.Intn(extraSizeKB + 1) // Range: 0 to extraSizeKB (inclusive)
+		actualSizeKB = baseSizeKB + extraSize
+	}
+
+	actualPayloadSize := max((actualSizeKB*1024)-overhead, minPayload)
+	// Use a slice of the buffer up to the actual size needed
+	actualBuf := payloadBuf[:min(actualPayloadSize, len(payloadBuf))]
+
 	// Build log entry
 	log := map[string]interface{}{
 		"service":       staticFields["service"],
@@ -202,7 +230,7 @@ func genAndWriteLogEntry(encoder *json.Encoder, rng *rand.Rand, payloadBuf []byt
 			"seek_events":   rng.Intn(6),
 			"cdn_edge":      "sea-01",
 		},
-		"large_payload": string(randomString(rng, payloadBuf)),
+		"large_payload": string(randomString(rng, actualBuf)),
 	}
 
 	// Encode directly to stdout
