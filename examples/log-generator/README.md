@@ -8,10 +8,11 @@ Container image that generates JSON log entries at configurable rates and sizes.
 |----------|---------|-------------|
 | `LOG_RATE_PER_SECOND` | `10` | Log generation rate per second |
 | `LOG_SIZE_KB` | `7` | Size of each log entry in KB |
+| `LOG_SIZE_EXTRA_KB` | `0` | Random extra size added to LOG_SIZE_KB (0 to LOG_SIZE_EXTRA_KB, 0 disables extra size) |
 | `LOG_SIZE_BURST_KB` | Same as `LOG_SIZE_KB` | Size of burst log entries in KB |
 | `BURST_INTERVAL_SECONDS` | `15` | Interval between burst logs in seconds |
 | `OUTPUT_FILE` | `STDOUT` | Output destination (file path or STDOUT) |
-| `LOG_ROTATE_MAX_SIZE` | `100` | Maximum size in MB before log rotation (0 disables rotation) |
+| `LOG_ROTATE_MAX_SIZE_MB` | `100` | Maximum size in MB before log rotation (0 disables rotation) |
 | `LOG_ROTATE_MAX_BACKUPS` | `5` | Maximum number of backup log files to keep |
 | `LOG_ROTATE_MAX_AGE` | `1` | Maximum age in days to keep log files (0 = no age limit) |
 
