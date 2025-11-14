@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"math/rand"
 	"os"
 	"strconv"
@@ -26,7 +28,14 @@ type User struct {
 var (
 	// Pre-computed values
 	charsetLen = len(charset)
-	encoderMu  sync.Mutex
+	writerMu   sync.Mutex
+
+	// Buffer pool for JSON serialization to reduce allocations
+	bufferPool = sync.Pool{
+		New: func() interface{} {
+			return new(bytes.Buffer)
+		},
+	}
 
 	// Sample users for random selection
 	users = []User{
@@ -107,24 +116,23 @@ func main() {
 	defer ticker.Stop()
 	burstTicker := time.NewTicker(burstInterval)
 	defer burstTicker.Stop()
-	var encoder *json.Encoder
+	var writer io.Writer
 
 	if config.Output != "STDOUT" {
 		// Use lumberjack for log rotation
-		logger := &lumberjack.Logger{
+		writer = &lumberjack.Logger{
 			Filename:   config.Output,
 			MaxSize:    config.RotateMaxSize,    // MB
 			MaxBackups: config.RotateMaxBackups, // Keep backup files
 			MaxAge:     config.RotateMaxAge,     // Days (0 = don't delete based on age)
 			Compress:   false,                   // Don't compress rotated files
 		}
-		encoder = json.NewEncoder(logger)
 	} else {
-		encoder = json.NewEncoder(os.Stdout)
+		writer = os.Stdout
 	}
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 5; i++ {
 		w := &worker{
-			encoder:     encoder,
+			writer:      writer,
 			rng:         rand.New(rand.NewSource(time.Now().UnixNano())),
 			buf:         make([]byte, payloadSize),
 			burstBuf:    make([]byte, burstPayloadSize),
@@ -135,7 +143,7 @@ func main() {
 		go w.run()
 	}
 	w := &worker{
-		encoder:     encoder,
+		writer:      writer,
 		rng:         rand.New(rand.NewSource(time.Now().UnixNano())),
 		buf:         make([]byte, payloadSize),
 		burstBuf:    make([]byte, burstPayloadSize),
@@ -219,7 +227,7 @@ func randomString(rng *rand.Rand, buf []byte) []byte {
 }
 
 type worker struct {
-	encoder     *json.Encoder
+	writer      io.Writer
 	rng         *rand.Rand
 	buf         []byte
 	burstBuf    []byte
@@ -232,14 +240,14 @@ func (w *worker) run() {
 	for range w.ticker.C {
 		select {
 		case <-w.burstTicker.C:
-			genAndWriteLogEntry(w.encoder, w.rng, w.burstBuf, w.config.BurstSizeKB, 0)
+			genAndWriteLogEntry(w.writer, w.rng, w.burstBuf, w.config.BurstSizeKB, 0)
 		default:
-			genAndWriteLogEntry(w.encoder, w.rng, w.buf, w.config.SizeKB, w.config.ExtraSizeKB)
+			genAndWriteLogEntry(w.writer, w.rng, w.buf, w.config.SizeKB, w.config.ExtraSizeKB)
 		}
 	}
 }
 
-func genAndWriteLogEntry(encoder *json.Encoder, rng *rand.Rand, payloadBuf []byte, baseSizeKB, extraSizeKB int) {
+func genAndWriteLogEntry(writer io.Writer, rng *rand.Rand, payloadBuf []byte, baseSizeKB, extraSizeKB int) {
 	// Calculate actual payload size with extra random size
 	actualSizeKB := baseSizeKB
 	if extraSizeKB > 0 {
@@ -286,8 +294,19 @@ func genAndWriteLogEntry(encoder *json.Encoder, rng *rand.Rand, payloadBuf []byt
 		"large_payload": string(randomString(rng, actualBuf)),
 	}
 
-	// Encode directly to stdout
-	encoderMu.Lock()
-	defer encoderMu.Unlock()
-	_ = encoder.Encode(log)
+	// Get buffer from pool and reset it
+	buf := bufferPool.Get().(*bytes.Buffer)
+	buf.Reset()
+	defer bufferPool.Put(buf)
+
+	// Encode to JSON without holding lock (parallelizes serialization)
+	encoder := json.NewEncoder(buf)
+	if err := encoder.Encode(log); err != nil {
+		return // Skip this log entry on encode error
+	}
+
+	// Only acquire lock for the write operation
+	writerMu.Lock()
+	defer writerMu.Unlock()
+	_, _ = writer.Write(buf.Bytes())
 }
