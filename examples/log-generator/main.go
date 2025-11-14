@@ -15,20 +15,55 @@ import (
 const (
 	charset    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	minPayload = 100
-	overhead   = 225
+	overhead   = 275
 )
+
+type User struct {
+	ID    string
+	Email string
+}
 
 var (
 	// Pre-computed values
 	charsetLen = len(charset)
 	encoderMu  sync.Mutex
 
-	// Static values that don't change
-	staticFields = map[string]interface{}{
-		"service":       "analytics",
-		"event_type":    "video_view",
-		"quality_level": "1080p",
-		"device_type":   "smart_tv",
+	// Sample users for random selection
+	users = []User{
+		{ID: "10001", Email: "alejandro_rosalez@amazondomains.com"},
+		{ID: "10002", Email: "akua_mansa@amazondomains.com"},
+		{ID: "10003", Email: "anacarolina_silva@amazondomains.com"},
+		{ID: "10004", Email: "arnav_desai@amazondomains.com"},
+		{ID: "10005", Email: "carlos_salazar@amazondomains.com"},
+		{ID: "10006", Email: "diego_ramirez@amazondomains.com"},
+		{ID: "10007", Email: "efua_owusu@amazondomains.com"},
+		{ID: "10008", Email: "gil-dong_hong@amazondomains.com"},
+		{ID: "10009", Email: "jane_doe@amazondomains.com"},
+		{ID: "10010", Email: "ji-hoon_namgoong@amazondomains.com"},
+		{ID: "10011", Email: "john_doe@amazondomains.com"},
+		{ID: "10012", Email: "john_stiles@amazondomains.com"},
+		{ID: "10013", Email: "jorge_souza@amazondomains.com"},
+		{ID: "10014", Email: "kwaku_mensah@amazondomains.com"},
+		{ID: "10015", Email: "kwesi_manu@amazondomains.com"},
+		{ID: "10016", Email: "juan_li@amazondomains.com"},
+		{ID: "10017", Email: "jie_liu@amazondomains.com"},
+		{ID: "10018", Email: "marcia_oliveria@amazondomains.com"},
+		{ID: "10019", Email: "maria_garcia@amazondomains.com"},
+		{ID: "10020", Email: "martha_rivera@amazondomains.com"},
+		{ID: "10021", Email: "mary_major@amazondomains.com"},
+		{ID: "10022", Email: "mateo_jackson@amazondomains.com"},
+		{ID: "10023", Email: "nikhil_jayashankar@amazondomains.com"},
+		{ID: "10024", Email: "nikki_wolf@amazondomains.com"},
+		{ID: "10025", Email: "pat_candella@amazondomains.com"},
+		{ID: "10026", Email: "paulo_santos@amazondomains.com"},
+		{ID: "10027", Email: "richard_roe@amazondomains.com"},
+		{ID: "10028", Email: "saanvi_sarkar@amazondomains.com"},
+		{ID: "10029", Email: "shirley_rodriguez@amazondomains.com"},
+		{ID: "10030", Email: "sofia_martinez@amazondomains.com"},
+		{ID: "10031", Email: "soo-jin_ki@amazondomains.com"},
+		{ID: "10032", Email: "terry_whitlock@amazondomains.com"},
+		{ID: "10033", Email: "xiulan_wang@amazondomains.com"},
+		{ID: "10034", Email: "wei_zhang@amazondomains.com"},
 	}
 )
 
@@ -57,7 +92,7 @@ func main() {
 	burstPayloadSize := max((config.BurstSizeKB*1024)-overhead, minPayload)
 
 	burstInterval := time.Second * time.Duration(config.BurstIntervalSeconds)
-	fmt.Printf("Starting SajaMediaGroup Analytics Log Generator...\n")
+	fmt.Printf("Starting AnyCompany Media Group Analytics Log Generator...\n")
 	fmt.Printf("Rate: %.1f logs/second\n", config.Rate)
 	if config.ExtraSizeKB > 0 {
 		fmt.Printf("Size: %d-%dKB per log (variable)\n", config.SizeKB, config.SizeKB+config.ExtraSizeKB)
@@ -217,14 +252,32 @@ func genAndWriteLogEntry(encoder *json.Encoder, rng *rand.Rand, payloadBuf []byt
 	// Use a slice of the buffer up to the actual size needed
 	actualBuf := payloadBuf[:min(actualPayloadSize, len(payloadBuf))]
 
+	// Select random user
+	user := users[rng.Intn(len(users))]
+
+	// Determine event type (90% ongoing, 10% final)
+	var eventType string
+	var durationS int
+	if rng.Intn(10) < 9 {
+		// 90% - video_view_ongoing: 1s to 3h (1 to 10,800 seconds)
+		eventType = "video_view_ongoing"
+		durationS = rng.Intn(10800) + 1
+	} else {
+		// 10% - video_view_final: 20m to 3h (1,200 to 10,800 seconds)
+		eventType = "video_view_final"
+		durationS = rng.Intn(9601) + 1200
+	}
+
 	// Build log entry
 	log := map[string]interface{}{
-		"service":       staticFields["service"],
-		"user_id":       strconv.Itoa(rng.Intn(90000) + 10000),
-		"event_type":    staticFields["event_type"],
+		"service":       "analytics",
+		"user_id":       user.ID,
+		"user_email":    user.Email,
+		"event_type":    eventType,
 		"video_id":      strconv.Itoa(rng.Intn(90000) + 100000),
-		"quality_level": staticFields["quality_level"],
-		"device_type":   staticFields["device_type"],
+		"duration_s":    durationS,
+		"quality_level": "1080p",
+		"device_type":   "smart_tv",
 		"metadata": map[string]interface{}{
 			"buffer_events": rng.Intn(11),
 			"seek_events":   rng.Intn(6),
