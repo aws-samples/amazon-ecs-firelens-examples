@@ -24,7 +24,7 @@ func BenchmarkGenAndWriteLogEntry(b *testing.B) {
 
 	// Run the benchmark
 	for i := 0; i < b.N; i++ {
-		genAndWriteLogEntry(encoder, rng, payloadBuf)
+		genAndWriteLogEntry(encoder, rng, payloadBuf, 7, 0)
 	}
 }
 
@@ -40,7 +40,7 @@ func BenchmarkGenAndWriteLogEntry_SmallPayload(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		genAndWriteLogEntry(encoder, rng, payloadBuf)
+		genAndWriteLogEntry(encoder, rng, payloadBuf, 1, 0)
 	}
 }
 
@@ -55,7 +55,7 @@ func BenchmarkGenAndWriteLogEntry_LargePayload(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		genAndWriteLogEntry(encoder, rng, payloadBuf)
+		genAndWriteLogEntry(encoder, rng, payloadBuf, 20, 0)
 	}
 }
 
@@ -70,6 +70,6 @@ func BenchmarkGenAndWriteLogEntry_Allocs(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		genAndWriteLogEntry(encoder, rng, payloadBuf)
+		genAndWriteLogEntry(encoder, rng, payloadBuf, 7, 0)
 	}
 }
