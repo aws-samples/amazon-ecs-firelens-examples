@@ -48,8 +48,44 @@ The script emits the following CloudWatch metric:
 
 1. Tracks bytes processed from each log record
 2. Every 10 seconds, calculates throughput in MB/s
-3. Outputs EMF-formatted JSON to stdout
+3. Outputs EMF-formatted JSON to stdout via fluent-bit
 4. Passes through original log records unchanged
+
+## Observing Metrics in CloudWatch
+
+Once the EMF metrics are sent to CloudWatch Logs, they are automatically extracted as CloudWatch metrics. You can view and query these metrics in several ways:
+
+### CloudWatch Metrics Console
+Navigate to CloudWatch > Metrics > Custom Namespaces > `aws-for-fluent-bit/LogThroughput` to view the `ThroughputMbps` metric.
+
+### CloudWatch Insights Query
+Use the following CloudWatch Logs Insights query to analyze throughput data:
+
+```sql
+SELECT AVG(ThroughputMbps) FROM SCHEMA("aws-for-fluent-bit/LogThroughput", LogGroup,TaskArn) GROUP BY TaskArn
+```
+
+### CloudWatch Dashboard Widget
+You can create a dashboard widget using the metrics expression above:
+
+```json
+{
+  "type": "metric",
+  "properties": {
+    "metrics": [
+      [{ 
+        "expression": "SELECT AVG(ThroughputMbps) FROM SCHEMA(\"aws-for-fluent-bit/LogThroughput\", LogGroup,TaskArn) GROUP BY TaskArn", 
+        "label": "ThroughputMbps", 
+        "id": "q1", 
+        "period": 20 
+      }]
+    ],
+    "view": "timeSeries",
+    "region": "${AWS::Region}",
+    "title": "Log Throughput by Task"
+  }
+}
+```
 
 ## Notes
 
