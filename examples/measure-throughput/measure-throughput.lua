@@ -55,15 +55,17 @@ function measure_throughput(tag, timestamp, record)
         local bytes_processed = total_bytes - last_total_bytes
         local time_elapsed = now - last_throughput_time
         local throughput_mbps = (bytes_processed / time_elapsed) / (1000 * 1000)
+        local throughput_kbps = (bytes_processed / time_elapsed) / 1000
 
         -- Get current TaskArn from record
         local current_task_arn = get_task_arn_from_record(record)
 
         -- Create EMF formatted metric record as JSON string
-        local emf_json = string.format('{"_aws":{"Timestamp":%d,"CloudWatchMetrics":[{"Namespace":"%s","Dimensions":[["LogGroup","TaskArn"]],"Metrics":[{"Name":"ThroughputMbps","Unit":"Megabytes/Second"}]}]},"ThroughputMbps":%f,"LogGroup":"%s","TaskArn":"%s"}',
+        local emf_json = string.format('{"_aws":{"Timestamp":%d,"CloudWatchMetrics":[{"Namespace":"%s","Dimensions":[["LogGroup","TaskArn"]],"Metrics":[{"Name":"ThroughputMbps","Unit":"Megabytes/Second"},{"Name":"ThroughputKbps","Unit":"Kilobytes/Second"}]}]},"ThroughputMbps":%f,"ThroughputKbps":%f,"LogGroup":"%s","TaskArn":"%s"}',
             now * 1000,  -- EMF expects milliseconds
             NAMESPACE,
             throughput_mbps,
+            throughput_kbps,
             LOG_GROUP,
             current_task_arn
         )

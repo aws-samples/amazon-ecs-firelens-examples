@@ -31,23 +31,26 @@ See `fluent-bit.conf` for the inline version.
 
 ## Metrics
 
-The script emits the following CloudWatch metric:
+The script emits the following CloudWatch metrics:
 - **Name**: `ThroughputMbps`
-- **Unit**: Megabytes/Second
-- **Dimensions**: LogGroup, TaskArn
+  - **Unit**: Megabytes/Second
+  - **Dimensions**: LogGroup, TaskArn
+- **Name**: `ThroughputKbps`
+  - **Unit**: Kilobytes/Second
+  - **Dimensions**: LogGroup, TaskArn
 
 ### Samples
 
 ```
-{"ThroughputMbps":2.720108,"TaskArn":"arn:aws:ecs:us-west-2:444455556666:task/fluentbit-workshop/TASK","_aws":{"CloudWatchMetrics":[{"Namespace":"aws-for-fluent-bit/LogThroughput","Dimensions":[["LogGroup","TaskArn"]],"Metrics":[{"Name":"ThroughputMbps","Unit":"Megabytes/Second","StorageResolution":1}]}],"Timestamp":1762561423000},"LogGroup":"/aws/fluent-bit/analytics"}
-2025-M-DT00:23:53.009000+00:00 fluent-bit/log-router/TASK {"ThroughputMbps":2.683549,"TaskArn":"arn:aws:ecs:us-west-2:444455556666:task/fluentbit-workshop/TASK","_aws":{"CloudWatchMetrics":[{"Namespace":"aws-for-fluent-bit/LogThroughput","Dimensions":[["LogGroup","TaskArn"]],"Metrics":[{"Name":"ThroughputMbps","Unit":"Megabytes/Second","StorageResolution":1}]}],"Timestamp":1762561433000},"LogGroup":"/aws/fluent-bit/analytics"}
-2025-M-DT00:24:03.009000+00:00 fluent-bit/log-router/TASK {"ThroughputMbps":2.692664,"TaskArn":"arn:aws:ecs:us-west-2:444455556666:task/fluentbit-workshop/TASK","_aws":{"CloudWatchMetrics":[{"Namespace":"aws-for-fluent-bit/LogThroughput","Dimensions":[["LogGroup","TaskArn"]],"Metrics":[{"Name":"ThroughputMbps","Unit":"Megabytes/Second","StorageResolution":1}]}],"Timestamp":1762561443000},"LogGroup":"/aws/fluent-bit/analytics"}
+{"ThroughputMbps":2.720108,"ThroughputKbps":2720.108,"TaskArn":"arn:aws:ecs:us-west-2:444455556666:task/fluentbit-workshop/TASK","_aws":{"CloudWatchMetrics":[{"Namespace":"aws-for-fluent-bit/LogThroughput","Dimensions":[["LogGroup","TaskArn"]],"Metrics":[{"Name":"ThroughputMbps","Unit":"Megabytes/Second","StorageResolution":1},{"Name":"ThroughputKbps","Unit":"Kilobytes/Second","StorageResolution":1}]}],"Timestamp":1762561423000},"LogGroup":"/aws/fluent-bit/analytics"}
+2025-M-DT00:23:53.009000+00:00 fluent-bit/log-router/TASK {"ThroughputMbps":2.683549,"ThroughputKbps":2683.549,"TaskArn":"arn:aws:ecs:us-west-2:444455556666:task/fluentbit-workshop/TASK","_aws":{"CloudWatchMetrics":[{"Namespace":"aws-for-fluent-bit/LogThroughput","Dimensions":[["LogGroup","TaskArn"]],"Metrics":[{"Name":"ThroughputMbps","Unit":"Megabytes/Second","StorageResolution":1},{"Name":"ThroughputKbps","Unit":"Kilobytes/Second","StorageResolution":1}]}],"Timestamp":1762561433000},"LogGroup":"/aws/fluent-bit/analytics"}
+2025-M-DT00:24:03.009000+00:00 fluent-bit/log-router/TASK {"ThroughputMbps":2.692664,"ThroughputKbps":2692.664,"TaskArn":"arn:aws:ecs:us-west-2:444455556666:task/fluentbit-workshop/TASK","_aws":{"CloudWatchMetrics":[{"Namespace":"aws-for-fluent-bit/LogThroughput","Dimensions":[["LogGroup","TaskArn"]],"Metrics":[{"Name":"ThroughputMbps","Unit":"Megabytes/Second","StorageResolution":1},{"Name":"ThroughputKbps","Unit":"Kilobytes/Second","StorageResolution":1}]}],"Timestamp":1762561443000},"LogGroup":"/aws/fluent-bit/analytics"}
 ```
 
 ## How It Works
 
 1. Tracks bytes processed from each log record
-2. Every 10 seconds, calculates throughput in MB/s
+2. Every 10 seconds, calculates throughput in both MB/s and KB/s
 3. Outputs EMF-formatted JSON to stdout via fluent-bit
 4. Passes through original log records unchanged
 
@@ -56,17 +59,21 @@ The script emits the following CloudWatch metric:
 Once the EMF metrics are sent to CloudWatch Logs, they are automatically extracted as CloudWatch metrics. You can view and query these metrics in several ways:
 
 ### CloudWatch Metrics Console
-Navigate to CloudWatch > Metrics > Custom Namespaces > `aws-for-fluent-bit/LogThroughput` to view the `ThroughputMbps` metric.
+Navigate to CloudWatch > Metrics > Custom Namespaces > `aws-for-fluent-bit/LogThroughput` to view the `ThroughputMbps` and `ThroughputKbps` metrics.
 
 ### CloudWatch Insights Query
-Use the following CloudWatch Logs Insights query to analyze throughput data:
+Use the following CloudWatch Logs Insights queries to analyze throughput data:
 
 ```sql
 SELECT AVG(ThroughputMbps) FROM SCHEMA("aws-for-fluent-bit/LogThroughput", LogGroup,TaskArn) GROUP BY TaskArn
 ```
 
+```sql
+SELECT AVG(ThroughputKbps) FROM SCHEMA("aws-for-fluent-bit/LogThroughput", LogGroup,TaskArn) GROUP BY TaskArn
+```
+
 ### CloudWatch Dashboard Widget
-You can create a dashboard widget using the metrics expression above:
+You can create a dashboard widget using the metrics expressions above:
 
 ```json
 {
@@ -77,6 +84,12 @@ You can create a dashboard widget using the metrics expression above:
         "expression": "SELECT AVG(ThroughputMbps) FROM SCHEMA(\"aws-for-fluent-bit/LogThroughput\", LogGroup,TaskArn) GROUP BY TaskArn", 
         "label": "ThroughputMbps", 
         "id": "q1", 
+        "period": 20 
+      }],
+      [{ 
+        "expression": "SELECT AVG(ThroughputKbps) FROM SCHEMA(\"aws-for-fluent-bit/LogThroughput\", LogGroup,TaskArn) GROUP BY TaskArn", 
+        "label": "ThroughputKbps", 
+        "id": "q2", 
         "period": 20 
       }]
     ],
