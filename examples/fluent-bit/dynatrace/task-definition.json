@@ -25,17 +25,16 @@
                    "Name":"http",
                    "Host":"{your-environment-id}.live.dynatrace.com",
                    "TLS":"on",
-                   "TLS.verify":"off",
                    "Format":"json",
                    "Json_Date_Format":"iso8601",
                    "Json_Date_Key":"timestamp",
-                   "Header":"Content-Type application/json; charset=utf-8",
-                   "Port":"443"
-                   "Allow_Duplicated_Headers":"false",
+                   "URI": "/api/v2/logs/ingest?Content-Type=application/json",
+                   "Port":"443",
+                   "Allow_Duplicated_Headers": "false",
                    "retry_limit":"2"
                 },
                 "secretOptions": [{
-                    "name": "URI",
+                    "name": "Header",
                     "valueFrom": "arn:${Partition}:secretsmanager:${Region}:${Account}:secret:${SecretId}"
                 }]
             },
