@@ -25,6 +25,7 @@ An [init tag](https://github.com/aws/aws-for-fluent-bit#using-the-init-tag) is d
 * [Source multiple configs from S3 or files](examples/fluent-bit/multi-config-support)
 * [Use ECS Task ID and ECS Metadata in configuration](examples/fluent-bit/init-metadata)
 * [Template log group or log stream name using ECS Task ID and ECS Metadata](examples/fluent-bit/init-metadata)
+* [Override the generated FireLens config, enable buffer settings, and inject ECS Metadata](examples/fluent-bit/init-ignore-firelens)
 
 ### Multiline Examples
 * [Concat multiline logs using regex parsers](examples/fluent-bit/filter-multiline)

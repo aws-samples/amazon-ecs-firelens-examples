@@ -1,0 +1,56 @@
+{
+    "family": "firelens-example-init-ignore-firelens",
+    "taskRoleArn": "arn:aws:iam::xxxxxxxxxx:role/ecs_task_iam_role",
+    "executionRoleArn": "arn:aws:iam::xxxxxxxxxx:role/ecs_task_execution_role",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:init-latest",
+            "name": "log_router",
+            "firelensConfiguration": {
+                "type": "fluentbit"
+            },
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "firelens-container",
+                    "awslogs-region": "us-west-2",
+                    "awslogs-create-group": "true",
+                    "awslogs-stream-prefix": "firelens-init"
+                }
+            },
+            "memoryReservation": 50,
+            "environment": [
+                {
+                    "name": "aws_fluent_bit_init_s3_1",
+                    "value": "arn:aws:s3:::TODO_YOUR_BUCKET/service.conf"
+                },
+                {
+                    "name": "aws_fluent_bit_init_s3_2",
+                    "value": "arn:aws:s3:::TODO_YOUR_BUCKET/inputs.conf"
+                },
+                {
+                    "name": "aws_fluent_bit_init_s3_3",
+                    "value": "arn:aws:s3:::TODO_YOUR_BUCKET/filters.conf"
+                },
+                {
+                    "name": "aws_fluent_bit_init_s3_4",
+                    "value": "arn:aws:s3:::TODO_YOUR_BUCKET/outputs.conf"
+                },
+                {
+                    "name": "aws_fluent_bit_init_ignore_firelens_config",
+                    "value": "true"
+                }
+            ]
+        },
+        {
+            "essential": true,
+            "image": "your-app-image",
+            "name": "app",
+            "logConfiguration": {
+                "logDriver": "awsfirelens"
+            },
+            "memoryReservation": 100
+        }
+    ]
+}
